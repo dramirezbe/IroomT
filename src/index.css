@@ -1,0 +1,25 @@
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  
+}
+
+:root {
+  /* Colores */
+  --color-primary: #303036; /* Fondo principal */
+  --color-secondary: #6A6A6C; /* Fondo secundario */
+  --color-text-primary: #FFFFFF; /* Texto principal */
+  --color-text-secondary: #B9BBBE; /* Texto secundario */
+  --color-accent: #2938de; /* Azul vibrante */
+  --color-accent-light: #5865F2;
+  --color-highlight: #57F287; /* Verde neón */
+  --color-alt-accent: #EB459E; /* Rosa neón */
+  --color-danger: #ED4245; /* Rojo alerta */
+
+  /* Fuentes */
+  --font-primary: 'Roboto Mono', monospace;
+  --font-secondary: 'Open Sans', sans-serif;
+  --font-code: 'Fira Code', monospace;
+
+}
