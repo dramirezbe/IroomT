@@ -55,6 +55,8 @@ const Plot: React.FC<PlotProps> = ({ xData, yData }) => {
     scales: {
       x: {
         type: "linear" as const,
+        min: Math.min(...xData),
+        max: Math.max(...xData),
         title: {
           display: true,
           text: "Frequency (Hz)",

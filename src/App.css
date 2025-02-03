@@ -1,27 +1,25 @@
 @import url('./index.css'); /* Asegúrate de que la ruta sea correcta */
 
 .main-container {
-    background-color: var(--color-primary);
-
     display: flex; /* Activa flexbox */
-    flex-direction: row; /* Alinea hijos horizontalmente */
-    height: 100%; /* Ocupa el 100% del alto del padre (:root) */
-    width: 100%; /* Ocupa el 100% del ancho */
-    gap: 20px; /* Espacio entre elementos (opcional) */
-    padding: 20px; /* Padding para no pegarse a los bordes (opcional) */
-    box-sizing: border-box; /* Incluye padding en el ancho/alto total */
+    flex-direction: column; /* Apila los elementos verticalmente */
+    gap: 5px; /* Espaciado entre elementos */
+}
+
+.top-container {
+    display: flex; /* Activa flexbox */
+    gap: 5px; /* Espaciado entre elementos */
 }
   
 .Plot-div {
     background-color: var(--color-secondary);
     flex: 1; /* Ocupa todo el espacio restante */
     border-radius: 10px;
-    font-family: var(--font-code); /* Fuente moderna y limpia */
 }
 .Plot-div h1 {
+    color: var(--color-highlight); /* Color destacado */
     font-size: 1.5rem; /* Tamaño de encabezado moderno */
     margin-bottom: 16px;
-    color: var(--color-highlight); /* Color destacado */
     border-bottom: 2px solid var(--color-highlight);
     padding: 20px;
     align-content: center;
@@ -33,8 +31,6 @@
     border-radius: 12px;
     padding: 20px; /* Espaciado interno cómodo */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto moderno */
-    color: var(--color-text-primary); /* Asegúrate de que el texto sea visible */
-    font-family: var(--font-code); /* Fuente moderna y limpia */
 }
 
 .Analytics h1 {
@@ -65,4 +61,12 @@
 .Analytics li:hover {
     transform: translateY(-4px); /* Efecto hover */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Realza el hover */
+}
+
+.Reserve-Container {
+    background-color: var(--color-secondary);
+    flex: 0 0 auto; /* Mantiene el ancho fijo según su contenido */
+    border-radius: 12px;
+    padding: 10px; /* Espaciado interno cómodo */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto moderno */
 }

@@ -29,27 +29,34 @@ const App: React.FC = () => {
   const ranNum = randomNumber(4); // Genera un número aleatorio entre 1 y 4
   const yData: number[] = randomNoise(xData, 0.0001, ranNum); // Genera ruido aleatorio
 
-  // Cálculo de métricas
-  const energy = yData.reduce((sum, val) => sum + val ** 2, 0);
-  const rms = Math.sqrt(energy / yData.length);
-  const snr = 10 * Math.log10(energy / yData.length);
+  console.log(xData.length)
+
 
   return (
-    <div className="main-container"> {/* Contenedor principal */}
-      <div className="Plot-div">
-        <h1>RF Spectrum</h1>
-        {/* Muestra el gráfico principal */}
-        <Plot xData={xData} yData={yData} />
-        <p>randomNumber: {ranNum}</p>
-      </div>
+    <div className="main-container">
+      <div className="top-container">
+        <div className="Plot-div">
+          <h1> RF Spectrum Monitor</h1>
+          <Plot xData={xData} yData={yData} />
+          <p>randomNumber: {ranNum}</p>
+        </div>
 
-      <div className="Analytics">
-        <h1>Analytics</h1>
-        <ul>
-          <li>SNR (dB): {snr.toFixed(2)}</li>
-          <li>Electromagnetic energy: {energy.toFixed(2)}</li>
-          <li>RMS: {rms.toFixed(2)}</li>
-        </ul>
+        <div className="Analytics">
+          <h1>Analytics</h1>
+          <ul aria-label="Métricas del espectro">
+            <li>SNR (dB): #</li>
+            <li>Electromagnetic energy: #</li>
+            <li>RMS: #</li>
+            <li>Central-Frequency: #</li>
+            <li>Power: #</li>
+            <li>Power Max: #</li>
+            <li>SNR: #</li>
+            <li>Presence: #</li>
+          </ul>
+        </div>
+      </div>
+      <div className="Reserve-Container"> 
+        <h1>RESERVED BOX</h1>
       </div>
     </div>
   );
