@@ -1,5 +1,6 @@
 import React from "react";
-import Plot from "./assets/Plot"; // Ajusta la ruta según tu estructura de archivos
+import Plot from "./assets/Plot";
+import Heatmap from "./assets/Heatmap";
 import "./App.css";
 
 // Generador de número aleatorio entre 1 y numLim
@@ -56,7 +57,7 @@ const App: React.FC = () => {
         </div>
       </div>
       <div className="Reserve-Container"> 
-        <h1>RESERVED BOX</h1>
+        <Heatmap />
       </div>
     </div>
   );
