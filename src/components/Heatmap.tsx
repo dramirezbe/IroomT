@@ -27,7 +27,7 @@ const Heatmap: React.FC = () => {
     ];
 
     // Agrega la imagen superpuesta con los nuevos límites.
-    L.imageOverlay("public/office-example.jpg", bounds).addTo(map);
+    L.imageOverlay("office-example.jpg", bounds).addTo(map);
 
     // Ajusta el mapa para que se enfoque en los límites definidos.
     map.fitBounds(bounds);
