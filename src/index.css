@@ -1,17 +1,17 @@
 @import "leaflet/dist/leaflet.css";
+@import 'normalize.css';
 
 :root {
   /* Colores */
-  --color-primary: #303036; /* Fondo principal */
-  --color-secondary: #6A6A6C; /* Fondo secundario */
-  --color-text-primary: #FFFFFF; /* Texto principal */
-  --color-text-secondary: #B9BBBE; /* Texto secundario */
-  --color-accent: #2938de; /* Azul vibrante */
-  --color-accent-light: #5865F2;
-  --color-highlight: #57F287; /* Verde neón */
-  --color-alt-accent: #EB459E; /* Rosa neón */
-  --color-danger: #ED4245; /* Rojo alerta */
-
+  --color-primary: #D8C4B6;
+  --color-secondary: rgb(19,99,166);
+  --color-text-primary: #213555;
+  --color-text-secondary: #E0D5CF;
+  --color-accent: #396dd6;
+  --color-accent-light: #8cadeb;
+  --color-highlight: #57F287;
+  --color-alt-accent: #EB459E;
+  --color-danger: #ED4245;
   /* Fuentes */
   --font-primary: 'Roboto Mono', monospace;
   --font-secondary: 'Open Sans', sans-serif;

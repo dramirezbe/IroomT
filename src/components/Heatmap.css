@@ -1,0 +1,4 @@
+.heatmap-container {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente */
+}

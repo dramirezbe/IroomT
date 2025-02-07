@@ -11,8 +11,7 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 
-import "../index.css";
-import "./Plot.css";
+import './Plot.css';      // Importar estilos específicos del componente
 
 // Retrieve CSS variables from the root element
 const styles = getComputedStyle(document.documentElement);
@@ -112,7 +111,7 @@ const Plot: React.FC<PlotProps> = ({ xData, yData }) => {
         },
       },
       animation: {
-        duration: 500,
+        duration: 600,
         easing: "easeInOutQuad",
       },
     }),

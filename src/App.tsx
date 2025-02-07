@@ -1,16 +1,14 @@
 import React from "react";
-import Plot from "./assets/Plot";
-import Heatmap from "./assets/Heatmap";
+import Plot from "./components/Plot.tsx";
+import Heatmap from "./components/Heatmap.tsx";
+import Header from "./components/Header.tsx";
+import InfoPlot from "./components/InfoPlot.tsx";
 import "./App.css";
 
-// Generador de número aleatorio entre 1 y numLim
-const randomNumber = (numLim: number): number => {
-  return Math.floor(Math.random() * numLim) + 1;
-};
 
 // Generador de ruido aleatorio basado en diferentes funciones
-const randomNoise = (xData: number[], noiseStdDev: number, ranNum: number): number[] => {
-  switch (ranNum) {
+const randomNoise = (xData: number[], noiseStdDev: number): number[] => {
+  switch (Math.floor(Math.random() * 4) + 1) {
     case 1:
       return xData.map((x) => noiseStdDev * (Math.random() * 2 - 1 + Math.log10(x)));
     case 2:
@@ -27,39 +25,21 @@ const randomNoise = (xData: number[], noiseStdDev: number, ranNum: number): numb
 const App: React.FC = () => {
   // Datos de prueba
   const xData: number[] = Array.from({ length: 4096 }, (_, i) => i); // Genera valores de 0 a 4095
-  const ranNum = randomNumber(4); // Genera un número aleatorio entre 1 y 4
-  const yData: number[] = randomNoise(xData, 0.0001, ranNum); // Genera ruido aleatorio
-
-  console.log(xData.length)
-
+  const yData: number[] = randomNoise(xData, 1e-7); // Genera ruido aleatorio
 
   return (
-    <div className="main-container">
-      <div className="top-container">
-        <div className="Plot-div">
-          <h1> RF Spectrum Monitor</h1>
+    <>
+      <Header />
+      <main className="main-container">
+        <section className="top-container">
           <Plot xData={xData} yData={yData} />
-          <p>randomNumber: {ranNum}</p>
-        </div>
-
-        <div className="Analytics">
-          <h1>Analytics</h1>
-          <ul aria-label="Métricas del espectro">
-            <li>SNR (dB): #</li>
-            <li>Electromagnetic energy: #</li>
-            <li>RMS: #</li>
-            <li>Central-Frequency: #</li>
-            <li>Power: #</li>
-            <li>Power Max: #</li>
-            <li>SNR: #</li>
-            <li>Presence: #</li>
-          </ul>
-        </div>
-      </div>
-      <div className="Reserve-Container"> 
-        <Heatmap />
-      </div>
-    </div>
+          <InfoPlot />
+        </section>
+        <section className="bottom-container"> 
+          <Heatmap />
+        </section>
+      </main>
+    </>
   );
 };
 

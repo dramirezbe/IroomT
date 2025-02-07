@@ -1,0 +1,64 @@
+
+/* Estilos para el header */
+.header-container {
+    display: flex;
+    align-items: center;
+    padding-top: 10px;
+    background-color: var(--color-primary);
+}
+  
+/* Logo: se recomienda ajustar la altura para mantener el header compacto */
+.logo {
+    height: 100px;
+    margin-right: 400px;
+}
+
+/* Título del header */
+.header-title {
+font-size: 1.8rem;
+color: var(--color-text-primary);
+margin: 0 20px;
+flex-grow: 1; /* Permite que el título use el espacio disponible */
+}
+
+/* Menú de navegación: se organiza horizontalmente */
+.navigation .menu {
+list-style: none;
+display: flex;
+gap: 10px;
+margin: 0;
+padding: 0;
+}
+
+/* Estilo de los enlaces que actúan como botones */
+.navigation .menu li a {
+display: inline-block;
+padding: 8px 12px;
+background-color: var(--color-accent);
+color: var(--color-text-secondary);
+text-decoration: none;
+transition: background-color 0.3s ease;
+}
+
+/* Efecto hover en los botones */
+.navigation .menu li a:hover {
+background-color: #00bcd4;
+}
+
+/* Opcional: ajustes responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+.header-container {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.header-title {
+    margin: 1px 1px;
+}
+
+.navigation .menu {
+    flex-wrap: wrap;
+    gap: 5px;
+}
+}
+  

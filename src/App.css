@@ -1,72 +1,15 @@
-@import url('./index.css'); /* Asegúrate de que la ruta sea correcta */
 
 .main-container {
     display: flex; /* Activa flexbox */
     flex-direction: column; /* Apila los elementos verticalmente */
-    gap: 5px; /* Espaciado entre elementos */
 }
 
 .top-container {
     display: flex; /* Activa flexbox */
-    gap: 5px; /* Espaciado entre elementos */
+    align-items: center;
 }
-  
-.Plot-div {
-    background-color: var(--color-secondary);
-    flex: 1; /* Ocupa todo el espacio restante */
-    border-radius: 10px;
-}
-.Plot-div h1 {
-    color: var(--color-highlight); /* Color destacado */
-    font-size: 1.5rem; /* Tamaño de encabezado moderno */
-    margin-bottom: 16px;
-    border-bottom: 2px solid var(--color-highlight);
-    padding: 20px;
-    align-content: center;
-}
-
-.Analytics {
-    background-color: var(--color-secondary);
-    flex: 0 0 auto; /* Mantiene el ancho fijo según su contenido */
-    border-radius: 12px;
-    padding: 20px; /* Espaciado interno cómodo */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto moderno */
-}
-
-.Analytics h1 {
-    font-size: 1.5rem; /* Tamaño de encabezado moderno */
-    margin-bottom: 16px;
-    color: var(--color-highlight); /* Color destacado */
-    border-bottom: 2px solid var(--color-highlight);
-    padding-bottom: 8px;
-}
-
-.Analytics ul {
-    list-style: none; /* Quita los puntos predeterminados */
-    padding: 0; /* Sin padding para alineación limpia */
-    margin: 0;
-}
-
-.Analytics li {
-    font-size: 1rem; /* Tamaño legible */
-    margin-bottom: 12px; /* Espaciado entre ítems */
-    padding: 8px 12px; /* Añade padding interno */
-    background-color: var(--color-accent); /* Fondo de cada ítem */
-    border-radius: 8px; /* Bordes redondeados */
-    color: var(--color-text-secondary); /* Texto legible sobre el fondo */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Animación suave */
-}
-
-.Analytics li:hover {
-    transform: translateY(-4px); /* Efecto hover */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Realza el hover */
-}
-
-.Reserve-Container {
-    background-color: var(--color-secondary);
-    flex: 0 0 auto; /* Mantiene el ancho fijo según su contenido */
-    border-radius: 12px;
-    padding: 10px; /* Espaciado interno cómodo */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para un efecto moderno */
+.bottom-container {
+    display: flex; /* Activa flexbox */
+    align-items: center;
+    justify-content: center;
 }
