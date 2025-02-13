@@ -1,13 +1,12 @@
 import React, { useEffect, useRef } from "react";
-import L, { Map } from "leaflet";
+import L from "leaflet";
 import "leaflet.heat";
-
 import "./Heatmap.css";
-import '../index.css'; // Importar estilos globales
+import "../index.css"; // Importar estilos globales
 
-const Heatmap: React.FC = () => {
-  const mapContainerRef = useRef<HTMLDivElement | null>(null);
-  const mapRef = useRef<Map | null>(null);
+const Heatmap = () => {
+  const mapContainerRef = useRef(null); // Referencia al contenedor del mapa
+  const mapRef = useRef(null); // Referencia al objeto del mapa
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -15,15 +14,15 @@ const Heatmap: React.FC = () => {
     // Inicializa el mapa.
     const map = L.map(mapContainerRef.current, {
       crs: L.CRS.Simple, // Usa coordenadas en píxeles.
-      minZoom: -2,       // Permite hacer zoom hacia adentro.
+      minZoom: -2, // Permite hacer zoom hacia adentro.
     }).setView([127.75, 183.75], 0); // Centra la vista en el centro de la imagen reducida (255.5/2, 367.5/2).
 
     mapRef.current = map;
 
     // Define los límites del mapa para que la imagen se muestre más pequeña.
-    const bounds: L.LatLngBoundsExpression = [
-      [0, 0],           // Esquina superior izquierda.
-      [255.5, 367.5],   // Esquina inferior derecha (mitad del tamaño original).
+    const bounds = [
+      [0, 0], // Esquina superior izquierda.
+      [255.5, 367.5], // Esquina inferior derecha (mitad del tamaño original).
     ];
 
     // Agrega la imagen superpuesta con los nuevos límites.
@@ -33,10 +32,10 @@ const Heatmap: React.FC = () => {
     map.fitBounds(bounds);
 
     // Genera puntos aleatorios para el heatmap dentro de los nuevos límites.
-    const heatPoints: [number, number, number][] = Array.from({ length: 50 }, () => [
+    const heatPoints = Array.from({ length: 50 }, () => [
       Math.random() * 255.5, // x aleatorio entre 0 y 255.5 (altura reducida).
       Math.random() * 367.5, // y aleatorio entre 0 y 367.5 (ancho reducido).
-      Math.random(),         // Intensidad aleatoria.
+      Math.random(), // Intensidad aleatoria.
     ]);
 
     // Crea y agrega la capa de heatmap al mapa.

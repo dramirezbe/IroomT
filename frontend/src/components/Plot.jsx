@@ -7,11 +7,9 @@ import {
   CategoryScale,
   Tooltip,
   Legend,
-  ChartOptions,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
-
-import './Plot.css';      // Importar estilos específicos del componente
+import './Plot.css'; // Importar estilos específicos del componente
 
 // Retrieve CSS variables from the root element
 const styles = getComputedStyle(document.documentElement);
@@ -23,14 +21,6 @@ const colorAccentLight = styles.getPropertyValue("--color-accent-light").trim();
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
 
 /**
- * Props for the Plot component.
- */
-interface PlotProps {
-  xData: number[];
-  yData: number[];
-}
-
-/**
  * Plot component renders a line chart using react-chartjs-2.
  *
  * @param {number[]} xData - The x-axis data points.
@@ -38,7 +28,7 @@ interface PlotProps {
  *
  * @returns A React element containing the rendered chart or an error message if the data is invalid.
  */
-const Plot: React.FC<PlotProps> = ({ xData, yData }) => {
+const Plot = ({ xData, yData }) => {
   // Validate input data
   if (!xData || !yData || xData.length !== yData.length || xData.length === 0) {
     return <div>Error: xData and yData must have the same non-zero length.</div>;
@@ -69,7 +59,7 @@ const Plot: React.FC<PlotProps> = ({ xData, yData }) => {
   );
 
   // Memoize chart options configuration to avoid unnecessary recalculations
-  const options = useMemo<ChartOptions<"line">>(
+  const options = useMemo(
     () => ({
       responsive: true,
       maintainAspectRatio: false,
@@ -86,7 +76,7 @@ const Plot: React.FC<PlotProps> = ({ xData, yData }) => {
           },
           ticks: { 
             color: colorTextPrimary,
-            stepSize: 100  // Muestra una marca cada 100 unidades
+            stepSize: 100, // Muestra una marca cada 100 unidades
           },
           grid: { color: colorTextPrimary + "30" },
         },

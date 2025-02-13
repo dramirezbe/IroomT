@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "mqtt": "^5.10.3"
-  },
-  "type": "module"
-}

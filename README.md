@@ -28,7 +28,8 @@ sudo systemctl start apache2
 Copiar el proyecto compilado a la carpeta de Apache:
 
 ```bash
-sudo mv /ruta/de/tu/dist /var/www/html/tu-app
+sudo rm -rf /var/www/html/*
+sudo cp -r dist/* /var/www/html/
 ```
 
 Configurar tu-app.conf
