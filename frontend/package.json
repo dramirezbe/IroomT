@@ -10,10 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "chart.js": "^4.4.7",
     "leaflet": "^1.9.4",
     "leaflet.heat": "^0.2.0",
+    "mqtt": "^5.10.3",
     "normalize.css": "^8.0.1",
+    "plotly.js-dist": "^3.0.0",
     "react": "^19.0.0",
     "react-chartjs-2": "^5.3.0",
     "react-dom": "^19.0.0"

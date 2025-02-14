@@ -23,6 +23,7 @@ Verificar funcionamiento de Apache:
 ```bash
 sudo systemctl status apache2
 sudo systemctl start apache2
+
 ```
 
 Copiar el proyecto compilado a la carpeta de Apache:

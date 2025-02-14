@@ -1,9 +1,12 @@
 import React from "react";
-import Plot from "./components/Plot";
+import PlotlyChart from "./components/Plot";
 import Heatmap from "./components/Heatmap";
 import Header from "./components/Header";
 import InfoPlot from "./components/InfoPlot";
+
 import "./App.css";
+
+import CounterComponent from "./BackendConnect"
 
 // Generador de ruido aleatorio basado en diferentes funciones
 const randomNoise = (xData, noiseStdDev) => {
@@ -31,11 +34,12 @@ const App = () => {
       <Header />
       <main className="main-container">
         <section className="top-container">
-          <Plot xData={xData} yData={yData} />
+          <PlotlyChart xData={xData} yData={yData} />
           <InfoPlot />
         </section>
         <section className="bottom-container">
           <Heatmap />
+          <CounterComponent/>
         </section>
       </main>
     </React.Fragment>

@@ -1,118 +1,98 @@
-import React, { useMemo } from "react";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  LinearScale,
-  CategoryScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Line } from "react-chartjs-2";
-import './Plot.css'; // Importar estilos específicos del componente
+import React, { useEffect, useRef, useState } from 'react';
+import Plotly from 'plotly.js-dist';
 
-// Retrieve CSS variables from the root element
-const styles = getComputedStyle(document.documentElement);
-const colorTextPrimary = styles.getPropertyValue("--color-text-primary").trim();
-const colorAccent = styles.getPropertyValue("--color-accent").trim();
-const colorAccentLight = styles.getPropertyValue("--color-accent-light").trim();
+const PlotlyChart = ({ xData, yData }) => {
+  const chartRef = useRef(null);
+  const [isMounted, setIsMounted] = useState(false);
 
-// Register necessary Chart.js components
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Tooltip, Legend);
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
-/**
- * Plot component renders a line chart using react-chartjs-2.
- *
- * @param {number[]} xData - The x-axis data points.
- * @param {number[]} yData - The y-axis data points.
- *
- * @returns A React element containing the rendered chart or an error message if the data is invalid.
- */
-const Plot = ({ xData, yData }) => {
-  // Validate input data
-  if (!xData || !yData || xData.length !== yData.length || xData.length === 0) {
-    return <div>Error: xData and yData must have the same non-zero length.</div>;
-  }
+  useEffect(() => {
+    if (!isMounted || !chartRef.current) return;
 
-  // Compute the minimum and maximum values for the x-axis once per data change
-  const [minX, maxX] = useMemo(() => {
-    return [Math.min(...xData), Math.max(...xData)];
-  }, [xData]);
+    const styles = getComputedStyle(document.documentElement);
+    const colorTextPrimary = styles.getPropertyValue("--color-text-primary").trim();
+    const colorAccent = styles.getPropertyValue("--color-accent").trim();
+    const colorAccentLight = styles.getPropertyValue("--color-accent-light").trim();
 
-  // Memoize chart data configuration to avoid unnecessary recalculations
-  const data = useMemo(
-    () => ({
-      labels: xData,
-      datasets: [
-        {
-          label: "Spectrum",
-          data: yData,
-          borderColor: colorAccent,
-          backgroundColor: colorAccentLight,
-          borderWidth: 2,
-          pointRadius: 0,
-          tension: 0.1,
-        },
-      ],
-    }),
-    [xData, yData]
-  );
+    if (!xData || !yData || xData.length === 0 || yData.length === 0) return;
 
-  // Memoize chart options configuration to avoid unnecessary recalculations
-  const options = useMemo(
-    () => ({
-      responsive: true,
-      maintainAspectRatio: false,
-      scales: {
-        x: {
-          type: "linear",
-          min: minX,
-          max: maxX,
-          title: {
-            display: true,
-            text: "Frequency (Hz)",
-            color: colorTextPrimary,
-            font: { size: 14 },
-          },
-          ticks: { 
-            color: colorTextPrimary,
-            stepSize: 100, // Muestra una marca cada 100 unidades
-          },
-          grid: { color: colorTextPrimary + "30" },
-        },
-        y: {
-          title: {
-            display: true,
-            text: "Magnitude (dB)",
-            color: colorTextPrimary,
-            font: { size: 14 },
-          },
-          ticks: { 
-            color: colorTextPrimary,
-          },
-          grid: { color: colorTextPrimary + "30" },
-        },
+    const minX = Math.min(...xData);
+    const maxX = Math.max(...xData);
+
+    const data = [{
+      x: xData,
+      y: yData,
+      type: 'scatter',
+      mode: 'lines',
+      line: { 
+        color: colorAccent,
+        width: 2
       },
-      plugins: {
-        legend: {
-          display: true,
-          position: "top",
-          labels: { color: colorTextPrimary },
-        },
-      },
-      animation: {
-        duration: 600,
-        easing: "easeInOutQuad",
-      },
-    }),
-    [minX, maxX]
-  );
+      name: 'Spectrum'
+    }];
 
-  return (
-    <div className="plot-container">
-      <Line data={data} options={options} />
-    </div>
-  );
+    const layout = {
+      title: {
+        text: 'Gráfico de datos',
+        font: {
+          color: colorTextPrimary,
+          size: 16
+        }
+      },
+      xaxis: {
+        title: {
+          text: 'Frequency (Hz)',
+          font: {
+            color: colorTextPrimary,
+            size: 14
+          }
+        },
+        range: [minX, maxX],
+        tickfont: { color: colorTextPrimary },
+        gridcolor: `${colorTextPrimary}30`,
+        linecolor: colorTextPrimary
+      },
+      yaxis: {
+        title: {
+          text: 'Magnitude (dB)',
+          font: {
+            color: colorTextPrimary,
+            size: 14
+          }
+        },
+        tickfont: { color: colorTextPrimary },
+        gridcolor: `${colorTextPrimary}30`,
+        linecolor: colorTextPrimary
+      },
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
+      margin: { t: 40, b: 80, l: 80, r: 40 }
+    };
+
+    // Delay para asegurar que el DOM está listo
+    const timer = setTimeout(() => {
+      if (chartRef.current && isMounted) {
+        Plotly.newPlot(chartRef.current, data, layout);
+      }
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      if (chartRef.current && isMounted) {
+        Plotly.purge(chartRef.current);
+      }
+    };
+  }, [xData, yData, isMounted]);
+
+  return <div ref={chartRef} style={{ 
+    height: "500px", 
+    width: "100%",
+    backgroundColor: 'var(--color-background)'
+  }} />;
 };
 
-export default Plot;
+export default PlotlyChart;
