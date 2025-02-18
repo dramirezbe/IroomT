@@ -6,8 +6,10 @@
 
 .top-container {
     display: flex; /* Activa flexbox */
-    align-items: center;
+    width: 100%;
+    height: 500px; /* Altura deseada */
 }
+
 .bottom-container {
     display: flex; /* Activa flexbox */
     align-items: center;

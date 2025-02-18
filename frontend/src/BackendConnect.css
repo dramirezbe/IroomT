@@ -1,0 +1,4 @@
+.backend-container {
+    flex: 2;       /* Ocupa el doble de espacio que el otro */
+    padding: 20px; /* Opcional, para separar visualmente */
+  }

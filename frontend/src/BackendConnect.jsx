@@ -1,69 +1,61 @@
-import React, { useState, useEffect } from 'react';
-import mqtt from 'mqtt';
+import React, { useState, useEffect, useCallback } from 'react';
+import { io } from 'socket.io-client';
+import PlotlyChart from "./components/Plot";
 
-const CounterComponent = () => {
-  const [counter, setCounter] = useState(0);
-  const [client, setClient] = useState(null);
-  const [isConnected, setIsConnected] = useState(false);
+import "./BackendConnect.css"
 
-  const handleStart = () => {
-    if (!isConnected) {
-      const mqttClient = mqtt.connect('ws://localhost:4883');
+const socket = io('http://localhost:3001');
 
-      mqttClient.on('connect', () => {
-        setIsConnected(true);
-        mqttClient.subscribe('counter/response', (err) => {
-          if (!err) {
-            mqttClient.publish('counter/request', '');
-          }
-        });
-      });
+function RealTimePlot() {
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [data, setData] = useState({ xData: [], yData: [] });
 
-      mqttClient.on('message', (topic, message) => {
-        if (topic === 'counter/response') {
-          setCounter(Number(message.toString()));
-        }
-      });
-
-      mqttClient.on('error', (err) => {
-        console.error('MQTT Error:', err);
-      });
-
-      setClient(mqttClient);
-    } else {
-      client.publish('counter/request', '');
-    }
-  };
-
-  const handleStop = () => {
-    if (client) {
-      client.end(() => {
-        setIsConnected(false);
-        setClient(null);
-        setCounter(0);
-      });
-    }
-  };
-
+  // Manejar datos entrantes
   useEffect(() => {
+    socket.on('data', (newData) => {
+      setData({
+        xData: newData.map(point => point.x),
+        yData: newData.map(point => point.y)
+      });
+    });
+
     return () => {
-      if (client) {
-        client.end();
-      }
+      socket.off('data');
     };
-  }, [client]);
+  }, []);
+
+  // Control del streaming
+  const handleStart = useCallback(() => {
+    if (!isStreaming) {
+      setIsStreaming(true);
+      socket.emit('start');
+    }
+  }, [isStreaming]);
+
+  const handleStop = useCallback(() => {
+    if (isStreaming) {
+      setIsStreaming(false);
+      socket.emit('stop');
+    }
+  }, [isStreaming]);
 
   return (
-    <div>
-      <button onClick={handleStart} disabled={isConnected}>
-        Inicio
-      </button>
-      <button onClick={handleStop} disabled={!isConnected}>
-        Final
-      </button>
-      <p>Contador: {counter}</p>
+    <div className='backend-container'>
+      <div>
+        <button 
+          onClick={handleStart}
+        >
+          Iniciar
+        </button>
+        <button 
+          onClick={handleStop}
+        >
+          Detener
+        </button>
+      </div>
+      <PlotlyChart xData={data.xData} yData={data.yData} />
     </div>
   );
-};
+}
 
-export default CounterComponent;
+export default RealTimePlot;

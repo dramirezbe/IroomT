@@ -1,5 +1,5 @@
 .Analytics {
-    flex: 0 0 auto; /* Mantiene el ancho fijo según su contenido */
+    flex: 0.5; /* Mantiene el ancho fijo según su contenido */
     padding: 20px; /* Espaciado interno cómodo */
 }
 
