@@ -1,123 +1,145 @@
 # Configuración KIOSK + Apache (Visualización de un sitio web en pantalla completa de manera local)
 
-Después de bajar el repositorio, se debe compilar el proyecto de React:
+Configurar hora, ssh, instalar lo que se necesita etc...
+```bash
+sudo raspi-config
+sudo apt update && sudo apt upgrade
+sudo apt install apache2 curl -y
+
+sudo a2enmod proxy
+sudo a2enmod proxy_http
+sudo a2enmod proxy_wstunnel
+sudo systemctl restart apache2
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+\. "$HOME/.nvm/nvm.sh"
+source ~/.bashrc
+nvm install 22
+```
 
 ```bash
+git clone https://github.com/dramirezbe/GCPDS-MonRaF2-platform
+cd GCPDS-MonRaF2-platform
+
 cd frontend
 npm install
 npm run build
 cd ..
+
 cd backend
 npm install
-gcc -o server server.c
+gcc server.c -o server.out -lm
 ```
 
-Instalar Apache:
 
-```bash
-sudo apt update
-sudo apt install apache2
-```
-
-Verificar funcionamiento de Apache:
-
-```bash
-sudo systemctl status apache2
-sudo systemctl start apache2
-
-```
 
 Copiar el proyecto compilado a la carpeta de Apache:
 
 ```bash
 sudo rm -rf /var/www/html/*
 sudo cp -r dist/* /var/www/html/
+sudo chown -R www-data:www-data /var/www/html
+
 ```
 
 Configurar proxy inverso
 ```bash
-sudo nano /etc/apache2/sites-available/000-default.conf
-```
+sudo nano /etc/apache2/sites-available/kiosk.conf
 
-```html
 <VirtualHost *:80>
-    ServerAdmin webmaster@localhost
+    ServerName localhost
     DocumentRoot /var/www/html
 
-    ProxyPreserveHost On
-    ProxyPass / http://localhost:3000/
-    ProxyPassReverse / http://localhost:3000/
+    # Proxy inverso para WebSocket (socket.io)
+    ProxyPass /socket.io ws://localhost:3001/socket.io retry=0
+    ProxyPassReverse /socket.io ws://localhost:3001/socket.io
 
-    ErrorLog ${APACHE_LOG_DIR}/error.log
-    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    # Proxy inverso para peticiones HTTP al servidor Node
+    ProxyPass /api http://localhost:3001/api
+    ProxyPassReverse /api http://localhost:3001/api
+
+    # Si el servidor Node maneja otras rutas, puedes redirigirlas también:
+    ProxyPass / http://localhost:3001/
+    ProxyPassReverse / http://localhost:3001/
+    
+    <Directory /var/www/html>
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    ErrorLog ${APACHE_LOG_DIR}/kiosk_error.log
+    CustomLog ${APACHE_LOG_DIR}/kiosk_access.log combined
+
+
+
+sudo a2ensite kiosk.conf
+sudo systemctl reload apache2
 </VirtualHost>
+
 ```
 
 
-Modificar permisos de la carpeta de Apache:
-
+Crear archivo de servicio de systemd para C y Node
 ```bash
-sudo chown -R www-data:www-data /var/www/html/
-sudo chmod -R 755 /var/www/html/
+sudo nano /etc/systemd/system/node-server.service
 ```
-
-Habilitar módulos apache:
-
-```bash
-sudo a2enmod proxy proxy_http proxy_wstunnel
-sudo systemctl restart apache2
-```
-
-Crear archivo de servicio para systemd
-
-```bash
-sudo nano /etc/systemd/system/server_c.service
-```
-Agregar contenido
 ```bash
 [Unit]
-Description=Server en C
+Description=Servidor Node para el proxy inverso del kiosk
 After=network.target
 
 [Service]
-ExecStart=/home/pi/GCPDS-MonRaF-Platform/backend/server
+ExecStart=/usr/bin/node /ruta/a/tu/proyecto/server.js
+WorkingDirectory=/ruta/a/tu/proyecto
 Restart=always
-User=pi
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=node-server
 Environment=NODE_ENV=production
 
 [Install]
 WantedBy=multi-user.target
 ```
-Habilita y arranca el servicio
 ```bash
-sudo systemctl enable server_c.service
-sudo systemctl start server_c.service
+sudo systemctl daemon-reload
+sudo systemctl enable node-server.service
+sudo systemctl start node-server.service
 ```
 
 ```bash
-sudo nano /etc/systemd/system/server_node.service
+sudo nano /etc/systemd/system/c-server.service
 ```
-Agregar contenido
 ```bash
 [Unit]
-Description=Server en Node
+Description=Servidor C para la comunicación del kiosk
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/node /home/pi/GCPDS-MonRaF2-Platform/backend/server.js
+ExecStart=/ruta/a/tu/proyecto/server.out
+WorkingDirectory=/ruta/a/tu/proyecto
 Restart=always
-User=pi
-Environment=NODE_ENV=production
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=c-server
 
 [Install]
 WantedBy=multi-user.target
 ```
-Habilita y arranca el servicio
 ```bash
-sudo systemctl enable server_node.service
-sudo systemctl start server_node.service
+sudo systemctl daemon-reload
+sudo systemctl enable c-server.service
+sudo systemctl start c-server.service
 ```
 
+
+
+Verificar estado
+```bash
+sudo systemctl status name_service.service
+```
 Configurar Firewall
 ```bash
 sudo ufw allow 80/tcp
@@ -125,11 +147,9 @@ sudo ufw allow 4883/tcp
 sudo ufw allow 5883/tcp
 ```
 
-Comandos útiles PM2:
+Reiniciar apache
 ```bash
-pm2 restart mqtt-backend
-pm2 logs mqtt-backend
-pm2 monit
+sudo systemctl restart apache2
 ```
 
 Acceder a la aplicación en el navegador:
@@ -137,13 +157,12 @@ Acceder a la aplicación en el navegador:
 ```bash
 http://localhost
 ```
-Compilar programa en c
-```bash
-gcc program_name.c -o executable_name -lm
-```
 
-Usar mqtt para conexión back-front
+Para hacer seguimiento a servicios
 ```bash
-sudo apt install mosquitto
+sudo journalctl -f -u name_service.service
 ```
-
+Ver logs de apache
+```bash
+sudo tail -f /var/log/apache2/error.log /var/log/apache2/access.log
+```
