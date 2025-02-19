@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Plotly from 'plotly.js-dist';
 
-import "./Plot.css"
+import "./PlotlyC.css"
 
-const PlotlyChart = ({ xData, yData }) => {
+const PlotlyC = ({ xData, yData }) => {
   const minX = Math.min(...xData);
   const maxX = Math.max(...xData);
   const chartRef = useRef(null);
@@ -106,4 +106,4 @@ const PlotlyChart = ({ xData, yData }) => {
   );
 };
 
-export default PlotlyChart;
+export default PlotlyC;

@@ -1,45 +1,47 @@
-import React from "react";
+// App.jsx
+import React, { useState, useEffect } from "react";
 import Heatmap from "./components/Heatmap";
 import Header from "./components/Header";
 import InfoPlot from "./components/InfoPlot";
-
-import RealTimePlot from "./BackendConnect";
-
+import UserControls from "./components/UserControls";
+import PlotlyC from "./components/PlotlyC";
+import { io } from 'socket.io-client';
 import "./App.css";
 
-
-
-// Generador de ruido aleatorio basado en diferentes funciones
-/*const randomNoise = (xData, noiseStdDev) => {
-  switch (Math.floor(Math.random() * 4) + 1) {
-    case 1:
-      return xData.map((x) => noiseStdDev * (Math.random() * 2 - 1 + Math.log10(x)));
-    case 2:
-      return xData.map((x) => noiseStdDev * (Math.random() * 2 - 1 + Math.sin(x)));
-    case 3:
-      return xData.map((x) => noiseStdDev * (Math.random() * 2 - 1 + Math.cos(x)));
-    case 4:
-      return xData.map((x) => noiseStdDev * (Math.random() * 2 - 1 + x ** 2));
-    default:
-      return xData.map((x) => noiseStdDev * (Math.random() * 2 - 1 + x));
-  }
-};*/
-
 const App = () => {
-  // Datos de prueba
-  //const xData = Array.from({ length: 4096 }, (_, i) => i); // Genera valores de 0 a 4095
-  //const yData = randomNoise(xData, 1e-7); // Genera ruido aleatorio
+  const [data, setData] = useState({ xData: [], yData: [] });
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io('http://localhost:3001', { transports: ['websocket'] });
+    setSocket(newSocket);
+
+    newSocket.on('data', (newData) => {
+      setData({
+        xData: newData.map(point => point.x),
+        yData: newData.map(point => point.y)
+      });
+    });
+
+    return () => newSocket.disconnect();
+  }, []);
+
+  const handleFrequenciesChange = (frequencies) => {
+    console.log("Frecuencias actualizadas:", frequencies);
+  };
 
   return (
     <React.Fragment>
       <Header />
       <main className="main-container">
         <section className="top-container">
-          <RealTimePlot/>
+          <PlotlyC xData={data.xData} yData={data.yData} />
           <InfoPlot />
         </section>
         <section className="bottom-container">
           <Heatmap />
+          {/* Pasa la instancia de socket a UserControls */}
+          <UserControls socket={socket} onFrequenciesChange={handleFrequenciesChange} />
         </section>
       </main>
     </React.Fragment>
