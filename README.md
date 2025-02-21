@@ -70,8 +70,7 @@ sudo nano /etc/apache2/sites-available/kiosk.conf
 
     ErrorLog ${APACHE_LOG_DIR}/kiosk_error.log
     CustomLog ${APACHE_LOG_DIR}/kiosk_access.log combined
-
-
+</VirtualHost>
 
 sudo a2ensite kiosk.conf
 sudo systemctl reload apache2
@@ -166,3 +165,4 @@ Ver logs de apache
 ```bash
 sudo tail -f /var/log/apache2/error.log /var/log/apache2/access.log
 ```
+

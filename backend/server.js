@@ -24,75 +24,82 @@ const EXPECTED_BYTES = DATA_POINTS * POINT_SIZE;
 
 // Variables de estado globales
 let isStreaming = false;
-let tcpClient = null;
+let tcpClient = new net.Socket();
+let isConnected = false;
 let receivedData = Buffer.alloc(0);
+let streamingInterval = null;
 
-// Función para conectar y recibir datos desde el servidor C
-const handleDataFromC = (socket, frequencies) => {
-  tcpClient = new net.Socket();
-  receivedData = Buffer.alloc(0);
-
+// Función para conectar de forma persistente a C
+const connectToC = (frequencies) => {
   tcpClient.connect(C_SERVER_PORT, C_SERVER_HOST, () => {
-    console.log('[TCP] C conectado');
-
-    // Enviar las 2 frecuencias a C (16 bytes: 2 doubles, little-endian)
+    console.log('[TCP] Conectado a C de forma persistente');
+    // Envía las frecuencias iniciales (solo una vez al conectar)
     const freqBuffer = Buffer.alloc(16);
     freqBuffer.writeDoubleLE(frequencies[0], 0);
     freqBuffer.writeDoubleLE(frequencies[1], 8);
     tcpClient.write(freqBuffer);
-  });
-
-  tcpClient.on('data', (chunk) => {
-    receivedData = Buffer.concat([receivedData, chunk]);
-
-    if (receivedData.length >= EXPECTED_BYTES) {
-      try {
-        const points = [];
-        const validData = receivedData.subarray(0, EXPECTED_BYTES);
-        for (let i = 0; i < DATA_POINTS; i++) {
-          const offset = i * POINT_SIZE;
-          const x = validData.readDoubleLE(offset);
-          const y = validData.readDoubleLE(offset + 8);
-          points.push({ x, y });
-        }
-        socket.emit('data', points);
-        tcpClient.end();
-        receivedData = Buffer.alloc(0);
-      } catch (err) {
-        console.error('🚫 Error procesando datos:', err.message);
-      }
-    }
-  });
-
-  tcpClient.on('close', () => {
-    console.log('[TCP] C desconectado');
-    tcpClient = null;
-  });
-
-  tcpClient.on('error', (err) => {
-    console.error('[TCP] Error:', err.message);
-    tcpClient = null;
+    isConnected = true;
   });
 };
 
-io.on('connection', (socket) => {
-  console.log('[WS] Cliente React conectado');
+tcpClient.on('data', (chunk) => {
+  receivedData = Buffer.concat([receivedData, chunk]);
+  if (receivedData.length >= EXPECTED_BYTES) {
+    try {
+      const points = [];
+      const validData = receivedData.subarray(0, EXPECTED_BYTES);
+      for (let i = 0; i < DATA_POINTS; i++) {
+        const offset = i * POINT_SIZE;
+        const x = validData.readDoubleLE(offset);
+        const y = validData.readDoubleLE(offset + 8);
+        points.push({ x, y });
+      }
+      // Emite los datos a todos los clientes conectados vía Socket.io
+      io.emit('data', points);
+      // Elimina de receivedData la porción ya procesada
+      receivedData = receivedData.subarray(EXPECTED_BYTES);
+    } catch (err) {
+      console.error('[TCP] Error procesando datos:', err.message);
+    }
+  }
+});
 
-  // Variable para almacenar el intervalo de streaming
-  let streamingInterval = null;
+tcpClient.on('error', (err) => {
+  console.error('[TCP] Error:', err.message);
+  isConnected = false;
+});
+
+tcpClient.on('close', () => {
+  console.log('[TCP] Conexión cerrada');
+  isConnected = false;
+});
+
+io.on('connection', (socket) => {
+  console.log('[WS] Cliente conectado');
 
   socket.on('start', (frequencies) => {
-    if (!isStreaming && frequencies && frequencies.length === 2) {
-      isStreaming = true;
+    if (frequencies && frequencies.length === 2) {
       console.log('[WS] Iniciando streaming con frecuencias:', frequencies);
-      handleDataFromC(socket, frequencies);
-
-      // Crea un intervalo que se ejecuta cada 1 segundo
-      streamingInterval = setInterval(() => {
-        if (isStreaming && !tcpClient) {
-          handleDataFromC(socket, frequencies);
+      if (!isStreaming) {
+        isStreaming = true;
+        if (!isConnected) {
+          // Si aún no está conectado, se conecta y se envían las frecuencias iniciales
+          connectToC(frequencies);
+        } else {
+          // Si ya está conectado, se envía un comando de actualización de frecuencias
+          const updateBuffer = Buffer.alloc(20); // 4 bytes para el comando + 16 bytes para las frecuencias
+          updateBuffer.write("FREQ", 0, 4, 'utf8');
+          updateBuffer.writeDoubleLE(frequencies[0], 4);
+          updateBuffer.writeDoubleLE(frequencies[1], 12);
+          tcpClient.write(updateBuffer);
         }
-      }, 1000);
+        // Envía solicitud "REQ" cada 1 segundo para obtener nuevos datos de C
+        streamingInterval = setInterval(() => {
+          if (isConnected) {
+            tcpClient.write(Buffer.from("REQ"));
+          }
+        }, 1000);
+      }
     }
   });
 
@@ -100,10 +107,13 @@ io.on('connection', (socket) => {
     if (isStreaming) {
       isStreaming = false;
       console.log('[WS] Streaming detenido');
-      if (tcpClient) tcpClient.end();
       if (streamingInterval) {
         clearInterval(streamingInterval);
         streamingInterval = null;
+      }
+      if (isConnected) {
+        // Enviar comando "STOP" para notificar a C que deje de enviar datos temporalmente
+        tcpClient.write(Buffer.from("STOP"));
       }
     }
   });
