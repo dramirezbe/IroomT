@@ -1,0 +1,20 @@
+# Archivos generados por CMake
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Directorio de compilación (build)
+build/
+
+# Archivos de objetos y binarios
+*.o
+*.obj
+*.so
+*.dll
+*.exe
+*.out
+
+# Archivos temporales de editores
+*~
+*.swp

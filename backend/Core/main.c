@@ -1,4 +1,3 @@
-// server.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,33 +5,9 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <time.h>
-#include <math.h>
+#include "handle_data.h"
 
 #define PORT 8080
-#define DATA_POINTS 4096
-
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
-typedef struct {
-    double x;
-    double y;
-} DataPoint;
-
-// Genera la señal como la suma de dos senos con ruido
-void generate_signal(DataPoint *data, double freq1, double freq2) {
-    const double sample_rate = 4096.0; // 4096 muestras por segundo
-    for (int i = 0; i < DATA_POINTS; i++) {
-        double t = (double)i / sample_rate;
-        double sine1 = sin(2.0 * M_PI * freq1 * t);
-        double sine2 = sin(2.0 * M_PI * freq2 * t);
-        // Ruido aleatorio: valor entre -0.1 y 0.1
-        double noise = (((double)rand() / RAND_MAX) - 0.5) * 0.2;
-        data[i].x = t;
-        data[i].y = sine1 + sine2 + noise;
-    }
-}
 
 int main() {
     int server_fd, new_socket;
@@ -50,7 +25,7 @@ int main() {
     }
 
     // Configurar opciones del socket
-    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt))) {
+    if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
         perror("setsockopt");
         exit(EXIT_FAILURE);
     }

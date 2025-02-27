@@ -1,0 +1,30 @@
+{
+  "name": "gcpds-monraf2-platform",
+  "version": "1.0.0",
+  "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
+    "start": "if [ ! -d \"frontend/dist\" ]; then npm run build --workspace=frontend; fi && NODE_ENV=production npm run start --workspace=backend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dramirezbe/GCPDS-MonRaF2-platform.git"
+  },
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dramirezbe/GCPDS-MonRaF2-platform/issues"
+  },
+  "homepage": "https://github.com/dramirezbe/GCPDS-MonRaF2-platform#readme",
+  "description": ""
+}

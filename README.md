@@ -4,7 +4,7 @@ Configurar hora, ssh, instalar lo que se necesita etc...
 ```bash
 sudo raspi-config
 sudo apt update && sudo apt upgrade
-sudo apt install apache2 curl -y
+sudo apt install apache2 curl cmake -y
 
 sudo a2enmod proxy
 sudo a2enmod proxy_http
@@ -166,3 +166,12 @@ Ver logs de apache
 sudo tail -f /var/log/apache2/error.log /var/log/apache2/access.log
 ```
 
+
+
+Generar ejecutable de C
+```bash
+mkdir build
+cd build
+cmake ..
+make
+```
