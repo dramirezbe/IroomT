@@ -4,7 +4,7 @@ Configurar hora, ssh, instalar lo que se necesita etc...
 ```bash
 sudo raspi-config
 sudo apt update && sudo apt upgrade
-sudo apt install curl cmake chromium-browser -y
+sudo apt install curl cmake chromium-browser git -y
 
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 
