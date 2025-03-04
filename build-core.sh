@@ -1,28 +1,23 @@
 #!/bin/bash
 # init-core.sh
-# Este script compila el proyecto C y ejecuta el binario resultante.
-# Se asume que:
-# - La carpeta "backend" está en la raíz del proyecto.
-# - El directorio de compilación es "backend/build".
-# - El binario se llama "monraf-core".
+# Asegura rutas correctas independientemente de dónde se ejecute el script
 
-# Entrar al directorio backend
+# Obtener directorio del script
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 echo "-------- init build-core.sh --------"
-cd backend/Core || { echo "No se pudo acceder a 'backend'"; exit 1; }
+cd "$SCRIPT_DIR/backend/Core" || { echo "No se pudo acceder a 'backend'"; exit 1; }
 
-# Crear la carpeta build (si no existe) y entrar en ella
-mkdir -p build && cd build || { echo "No se pudo acceder a 'build'"; exit 1; }
+mkdir -p build && cd build || { echo "Error con 'build'"; exit 1; }
 
-# Ejecutar cmake y make para compilar el proyecto C
 echo "Ejecutando cmake .."
 cmake ..
 echo "Ejecutando make"
 make
 
-# Verificar que el binario existe
-BINARY="./monraf-core"
+BINARY="$PWD/monraf-core"
 if [ ! -f "$BINARY" ]; then
-    echo "Error: no se encontró el binario $BINARY. Revisa la compilación."
+    echo "Error: No se encontró $BINARY"
     exit 1
 fi
 

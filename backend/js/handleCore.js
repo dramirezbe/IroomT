@@ -12,7 +12,7 @@ function initCore() {
     const scriptPath = path.join(__dirname, '..', '..', 'build-core.sh');
 
     // Ejecutar el script usando sh, con cwd apuntando a la raíz del proyecto
-    const coreProcess = spawn('sh', [scriptPath], { 
+    const coreProcess = spawn('bash', [scriptPath], { 
       stdio: 'inherit', 
       cwd: path.join(__dirname, '..', '..')
     });
