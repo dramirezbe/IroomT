@@ -1,40 +1,42 @@
 const net = require('net');
 
+const readJSONCallback = require('./handleJSON');
+
 const C_SERVER_HOST = 'localhost';
 const C_SERVER_PORT = 8080;
-const DATA_POINTS = 4096;
-const POINT_SIZE = 16; // 8 bytes (x) + 8 bytes (y)
-const EXPECTED_BYTES = DATA_POINTS * POINT_SIZE;
 
 class TcpClient {
   constructor() {
     this.tcpClient = new net.Socket();
     this.isConnected = false;
     this.receivedData = Buffer.alloc(0);
-    this.onData = null; // Callback para emitir los datos a Socket.io
     this.setupListeners();
   }
 
   setupListeners() {
     this.tcpClient.on('data', (chunk) => {
       this.receivedData = Buffer.concat([this.receivedData, chunk]);
-      if (this.receivedData.length >= EXPECTED_BYTES) {
-        try {
-          const points = [];
-          const validData = this.receivedData.subarray(0, EXPECTED_BYTES);
-          for (let i = 0; i < DATA_POINTS; i++) {
-            const offset = i * POINT_SIZE;
-            const x = validData.readDoubleLE(offset);
-            const y = validData.readDoubleLE(offset + 8);
-            points.push({ x, y });
-          }
-          // Llamamos al callback si está definido
-          this.onData && this.onData(points);
-          // Eliminamos la parte procesada
-          this.receivedData = this.receivedData.subarray(EXPECTED_BYTES);
-        } catch (err) {
-          console.error('[TCP] Error procesando datos:', err.message);
+      
+      // Esperamos que se reciba al menos 1 byte para el booleano
+      if (this.receivedData.length >= 1) {
+        const flag = this.receivedData.readUInt8(0);
+        
+        if (flag === 1) {
+          console.log('[TCP] JSON ya fue creado en C_SERVER');
+          // Enviar comando para borrar el JSON
+          readJSONCallback((err, socketData) => {
+            if (err) {
+              console.error("Hubo un error:", err);
+            } else {
+              console.log("Datos leídos:", socketData);
+            }
+          });
+          
+          this.tcpClient.write(Buffer.from("DEL"));
         }
+        
+        // Eliminamos el byte ya procesado
+        this.receivedData = this.receivedData.slice(1);
       }
     });
 
@@ -49,38 +51,11 @@ class TcpClient {
     });
   }
 
-  connect(frequencies) {
+  connect() {
     this.tcpClient.connect(C_SERVER_PORT, C_SERVER_HOST, () => {
-      console.log('[TCP] Conectado a C de forma persistente');
-      // Envía las frecuencias iniciales
-      const freqBuffer = Buffer.alloc(16);
-      freqBuffer.writeDoubleLE(frequencies[0], 0);
-      freqBuffer.writeDoubleLE(frequencies[1], 8);
-      this.tcpClient.write(freqBuffer);
+      console.log('[TCP] Conectado a C_SERVER');
       this.isConnected = true;
     });
-  }
-
-  updateFrequencies(frequencies) {
-    if (this.isConnected) {
-      const updateBuffer = Buffer.alloc(20); // 4 bytes comando + 16 bytes frecuencias
-      updateBuffer.write("FREQ", 0, 4, 'utf8');
-      updateBuffer.writeDoubleLE(frequencies[0], 4);
-      updateBuffer.writeDoubleLE(frequencies[1], 12);
-      this.tcpClient.write(updateBuffer);
-    }
-  }
-
-  requestData() {
-    if (this.isConnected) {
-      this.tcpClient.write(Buffer.from("REQ"));
-    }
-  }
-
-  stop() {
-    if (this.isConnected) {
-      this.tcpClient.write(Buffer.from("STOP"));
-    }
   }
 }
 

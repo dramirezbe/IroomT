@@ -3,45 +3,53 @@ import React, { useState, useEffect } from "react";
 import Heatmap from "./components/Heatmap";
 import Header from "./components/Header";
 import InfoPlot from "./components/InfoPlot";
-import UserControls from "./components/UserControls";
 import PlotlyC from "./components/PlotlyC";
-import { io } from 'socket.io-client';
+
+import { useSocket } from './SocketContext';
+
+
+
 import "./App.css";
 
 const App = () => {
-  const [data, setData] = useState({ xData: [], yData: [] });
-  const [socket, setSocket] = useState(null);
+  const socket = useSocket();
+  const [socketData, setSocketData] = useState([]);
 
   useEffect(() => {
-    const newSocket = io('http://localhost:3001', { transports: ['websocket'] });
-    setSocket(newSocket);
-
-    newSocket.on('data', (newData) => {
-      setData({
-        xData: newData.map(point => point.x),
-        yData: newData.map(point => point.y)
-      });
+    // Escuchar el evento con los datos del servidor TCP
+    socket.on("tcp-data", (data) => {
+      console.log("Datos recibidos:", data);
+      // Se asume que data ya es un array en el formato:
+      // [band, fmin, fmax, units, measure, Pxx, f]
+      setSocketData(data);
     });
 
-    return () => newSocket.disconnect();
-  }, []);
+    // Limpieza de la conexión al desmontar el componente
+    return () => socket.disconnect();
+  }, [socket]);
 
-  const handleFrequenciesChange = (frequencies) => {
-    console.log("Frecuencias actualizadas:", frequencies);
-  };
+  // Desestructuramos el array recibido, asignando valores por defecto en caso de que aún no se hayan recibido datos
+  const [
+    band = "N/A",
+    fmin = "N/A",
+    fmax = "N/A",
+    units = "N/A",
+    measure = "N/A",
+    Pxx = [],
+    f = []
+  ] = socketData;
 
   return (
     <React.Fragment>
       <Header />
       <main className="main-container">
         <section className="top-container">
-          <PlotlyC xData={data.xData} yData={data.yData} />
-          <InfoPlot />
+          <PlotlyC xData={f} yData={Pxx} />
+          <InfoPlot band={band} fmin={fmin} fmax={fmax} units={units} measure={measure}/>
         </section>
         <section className="bottom-container">
           <Heatmap />
           {/* Pasa la instancia de socket a UserControls */}
-          <UserControls socket={socket} onFrequenciesChange={handleFrequenciesChange} />
         </section>
       </main>
     </React.Fragment>

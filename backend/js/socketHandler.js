@@ -1,55 +1,46 @@
+// socketHandler.js
 const TcpClient = require('./tcpClient');
 
-module.exports = (io) => {
-  const tcpClient = new TcpClient();
-  let streamingInterval = null;
-  let isStreaming = false;
+function sendSocketData(socketData, callback) {
+  // Si no se pasa callback, usamos una función vacía para evitar errores
+  if (typeof callback !== 'function') {
+    callback = () => {};
+  }
 
-  // Define el callback para emitir datos a todos los clientes conectados
-  tcpClient.onData = (points) => {
-    io.emit('data', points);
-  };
+  let message;
+  try {
+    // Suponemos que socketData es un array (o dato serializable) y lo convertimos directamente a JSON
+    message = JSON.stringify(socketData);
+  } catch (err) {
+    console.error('[socketHandler] Error al convertir socketData a JSON:', err);
+    return callback(err, null);
+  }
 
-  io.on('connection', (socket) => {
-    console.log('[WS] Cliente conectado');
+  // Crea una instancia del cliente TCP
+  const tcpClientInstance = new TcpClient();
 
-    socket.on('start', (frequencies) => {
-      if (frequencies && frequencies.length === 2) {
-        console.log('[WS] Iniciando streaming con frecuencias:', frequencies);
-        if (!isStreaming) {
-          isStreaming = true;
-          if (!tcpClient.isConnected) {
-            tcpClient.connect(frequencies);
-          } else {
-            tcpClient.updateFrequencies(frequencies);
-          }
-          // Envía la solicitud de datos cada 1 segundo
-          streamingInterval = setInterval(() => {
-            tcpClient.requestData();
-          }, 1000);
-        }
-      }
-    });
+  // Conecta al servidor TCP
+  tcpClientInstance.connect();
 
-    socket.on('stop', () => {
-      if (isStreaming) {
-        isStreaming = false;
-        console.log('[WS] Streaming detenido');
-        if (streamingInterval) {
-          clearInterval(streamingInterval);
-          streamingInterval = null;
-        }
-        tcpClient.stop();
-      }
-    });
-
-    socket.on('disconnect', () => {
-      console.log('[WS] Cliente desconectado');
-      if (streamingInterval) {
-        clearInterval(streamingInterval);
-        streamingInterval = null;
-      }
-      isStreaming = false;
-    });
+  // Una vez conectado, se dispara el evento 'connect'
+  tcpClientInstance.tcpClient.on('connect', () => {
+    console.log('[socketHandler] Conectado, enviando socketData...');
+    tcpClientInstance.tcpClient.write(message);
   });
-};
+
+  // Escucha la respuesta del servidor
+  tcpClientInstance.tcpClient.on('data', (data) => {
+    console.log('[socketHandler] Respuesta del servidor:', data.toString());
+    callback(null, data.toString());
+    // Cierra la conexión después de recibir la respuesta
+    tcpClientInstance.tcpClient.destroy();
+  });
+
+  // Manejo de errores
+  tcpClientInstance.tcpClient.on('error', (err) => {
+    console.error('[socketHandler] Error:', err.message);
+    callback(err, null);
+  });
+}
+
+module.exports = sendSocketData;

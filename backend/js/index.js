@@ -1,15 +1,17 @@
+// index.js
 const express = require('express');
 const path = require('path');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const handleCore = require('./handleCore'); // Asegúrate de que la ruta sea correcta
+const socketHandler = require('./socketHandler');
+const handleCore = require('./handleCore');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5173", // Dirección de tu app React (Vite)
     methods: ["GET", "POST"]
   }
 });
@@ -27,17 +29,3 @@ if (process.env.NODE_ENV === 'production') {
     res.send('API funcionando en desarrollo');
   });
 }
-
-// Inicializa el manejo de Socket.io y la conexión TCP
-require('./socketHandler')(io);
-
-httpServer.listen(PORT, () => {
-  console.log(`Servidor corriendo en http://localhost:${PORT}`);
-  handleCore.initCore()
-    .then(() => {
-      handleCore.startCore();
-    })
-    .catch((err) => {
-      console.error('Error durante la inicialización del core:', err);
-    });
-});

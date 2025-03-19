@@ -1,19 +1,16 @@
 import React from "react";
-import './InfoPlot.css'; // Importar estilos específicos del componente
+import './InfoPlot.css'; // Importa los estilos específicos del componente
 
-const InfoPlot = () => {
+const InfoPlot = ({ band, fmin, fmax, units, measure }) => {
     return (
         <div className="Analytics">
             <h1>Spectrum Info</h1>
             <ul>
-                <li>SNR (dB): #</li>
-                <li>Electromagnetic energy: #</li>
-                <li>RMS: #</li>
-                <li>Central-Frequency: #</li>
-                <li>Power: #</li>
-                <li>Power Max: #</li>
-                <li>SNR: #</li>
-                <li>Presence: #</li>
+                <li>Band: {band}</li>
+                <li>Fmin: {fmin}</li>
+                <li>Fmax: {fmax}</li>
+                <li>Units: {units}</li>
+                <li>Measure: {measure}</li>
             </ul>
         </div>
     );
