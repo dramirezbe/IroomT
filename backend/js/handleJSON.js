@@ -12,19 +12,12 @@ function readJSONCallback(callback) {
     }
     try {
       const parsed = JSON.parse(jsonString);
-      // Extraer los datos que necesitas del objeto "data"
-      const { band, fmin, fmax, units, measure, vectors } = parsed.data;
-      const { Pxx, f } = vectors;
-      const socketData = [band, fmin, fmax, units, measure, Pxx, f];
-      
-      // Llamamos al callback con null como error y socketData como datos
-      callback(null, socketData);
-    } catch (error) {
-      console.error("Error parseando JSON:", error);
-      callback(error, null);
+      return callback(null, parsed);
+    } catch (parseError) {
+      console.error("Error al parsear el JSON:", parseError);
+      return callback(parseError, null);
     }
   });
 }
-
 
 module.exports = readJSONCallback;

@@ -1,59 +1,51 @@
 // App.jsx
-import React, { useState, useEffect } from "react";
-import Heatmap from "./components/Heatmap";
-import Header from "./components/Header";
-import InfoPlot from "./components/InfoPlot";
-import PlotlyC from "./components/PlotlyC";
+import React, { useState } from 'react';
+import { SocketProvider } from './SocketContext';
+import SocketJSON from './SocketJSON';
+import Header from './components/Header';
+import PlotlyC from './components/PlotlyC';
+import InfoPlot from './components/InfoPlot';
+import Heatmap from './components/Heatmap';
 
-import { useSocket } from './SocketContext';
+function App() {
+  // Estado inicial con valores por defecto
+  const [socketData, setSocketData] = useState({
+    band: "N/A",
+    fmin: "N/A",
+    fmax: "N/A",
+    units: "N/A",
+    measure: "N/A",
+    Pxx: [],
+    f: []
+  });
 
+  const handleSocketData = (dataObj) => {
+    console.log("Datos recibidos en App:", dataObj);
+    setSocketData(dataObj);
+  };
 
-
-import "./App.css";
-
-const App = () => {
-  const socket = useSocket();
-  const [socketData, setSocketData] = useState([]);
-
-  useEffect(() => {
-    // Escuchar el evento con los datos del servidor TCP
-    socket.on("tcp-data", (data) => {
-      console.log("Datos recibidos:", data);
-      // Se asume que data ya es un array en el formato:
-      // [band, fmin, fmax, units, measure, Pxx, f]
-      setSocketData(data);
-    });
-
-    // Limpieza de la conexión al desmontar el componente
-    return () => socket.disconnect();
-  }, [socket]);
-
-  // Desestructuramos el array recibido, asignando valores por defecto en caso de que aún no se hayan recibido datos
-  const [
-    band = "N/A",
-    fmin = "N/A",
-    fmax = "N/A",
-    units = "N/A",
-    measure = "N/A",
-    Pxx = [],
-    f = []
-  ] = socketData;
+  // Desestructurar los datos recibidos para pasarlos a los componentes
+  const { band, fmin, fmax, units, measure, Pxx, f } = socketData;
 
   return (
-    <React.Fragment>
-      <Header />
-      <main className="main-container">
-        <section className="top-container">
-          <PlotlyC xData={f} yData={Pxx} />
-          <InfoPlot band={band} fmin={fmin} fmax={fmax} units={units} measure={measure}/>
-        </section>
-        <section className="bottom-container">
-          <Heatmap />
-          {/* Pasa la instancia de socket a UserControls */}
-        </section>
-      </main>
-    </React.Fragment>
+    <SocketProvider>
+      <React.Fragment>
+        <Header />
+        <main className="main-container">
+          <section className="top-container">
+            <PlotlyC xData={f} yData={Pxx} />
+            <InfoPlot band={band} fmin={fmin} fmax={fmax} units={units} measure={measure} />
+          </section>
+          <section className="bottom-container">
+            <Heatmap />
+            {/* Aquí puedes pasar la instancia del socket a UserControls si es necesario */}
+          </section>
+        </main>
+        {/* Componente que se encarga de recibir el JSON vía socket */}
+        <SocketJSON onSocketData={handleSocketData} />
+      </React.Fragment>
+    </SocketProvider>
   );
-};
+}
 
 export default App;

@@ -1,10 +1,8 @@
-// index.js
 const express = require('express');
 const path = require('path');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const socketHandler = require('./socketHandler');
-const handleCore = require('./handleCore');
+const TcpClient = require('./tcpClient');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,3 +27,17 @@ if (process.env.NODE_ENV === 'production') {
     res.send('API funcionando en desarrollo');
   });
 }
+
+// Iniciar el servidor HTTP
+httpServer.listen(PORT, () => {
+  console.log(`Servidor Express escuchando en el puerto ${PORT}`);
+});
+
+// Instanciar el TcpClient y pasarle un callback para emitir los datos vía Socket.io
+const tcpClient = new TcpClient((socketData) => {
+  io.emit('jsonData', socketData);
+  console.log('Datos JSON enviados vía Socket.io.');
+});
+
+// Conectar el cliente TCP
+tcpClient.connect();

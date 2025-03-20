@@ -1,41 +1,47 @@
 const net = require('net');
-
 const readJSONCallback = require('./handleJSON');
 
 const C_SERVER_HOST = 'localhost';
 const C_SERVER_PORT = 8080;
 
 class TcpClient {
-  constructor() {
+  /**
+   * @param {function} onJsonData - Función callback que se invoca al leer el JSON.
+   */
+  constructor(onJsonData) {
     this.tcpClient = new net.Socket();
     this.isConnected = false;
     this.receivedData = Buffer.alloc(0);
+    this.onJsonData = onJsonData;
     this.setupListeners();
   }
 
   setupListeners() {
     this.tcpClient.on('data', (chunk) => {
+      // Concatenar los datos recibidos
       this.receivedData = Buffer.concat([this.receivedData, chunk]);
       
-      // Esperamos que se reciba al menos 1 byte para el booleano
+      // Verificar si se ha recibido al menos 1 byte (el flag)
       if (this.receivedData.length >= 1) {
         const flag = this.receivedData.readUInt8(0);
         
         if (flag === 1) {
           console.log('[TCP] JSON ya fue creado en C_SERVER');
-          // Enviar comando para borrar el JSON
+          // Ejecutar el callback para leer el JSON
           readJSONCallback((err, socketData) => {
             if (err) {
-              console.error("Hubo un error:", err);
+              console.error("Hubo un error al leer el JSON:", err);
             } else {
               console.log("Datos leídos:", socketData);
+              // Llamar al callback pasado en el constructor para enviar los datos vía socket.io
+              if (this.onJsonData) {
+                this.onJsonData(socketData);
+              }
             }
           });
-          
-          this.tcpClient.write(Buffer.from("DEL"));
         }
         
-        // Eliminamos el byte ya procesado
+        // Eliminar el byte ya procesado
         this.receivedData = this.receivedData.slice(1);
       }
     });
