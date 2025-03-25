@@ -11,6 +11,9 @@ const InfoPlot = ({ band, fmin, fmax, units, measure }) => {
                 <li>Fmax: {fmax}</li>
                 <li>Units: {units}</li>
                 <li>Measure: {measure}</li>
+                <li>Avg Power: #</li>
+                <li>Peak Power: #</li>
+                <li>Peak Freq: #</li>
             </ul>
         </div>
     );

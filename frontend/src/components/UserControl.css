@@ -1,0 +1,46 @@
+.user-control {
+    flex: 0.5;
+    padding: 20px;
+}
+
+.user-control__title {
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    color: var(--color-text-primary);
+    padding-bottom: 8px;
+}
+
+.user-control__form {
+    margin-bottom: 20px;
+}
+
+.user-control__label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.user-control__select {
+    width: 100%;
+    padding: 8px;
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.user-control__submit {
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    background-color: var(--color-accent);
+    color: var(--color-text-secondary);
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.user-control__submit:hover {
+    transform: translateY(-2px);
+}
+  
+.user-control__result {
+    font-size: 1rem;
+}

@@ -1,11 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Plotly from 'plotly.js-dist';
 
-import "./PlotlyC.css"
 
-const PlotlyC = ({ xData, yData }) => {
-  const minX = Math.min(...xData);
-  const maxX = Math.max(...xData);
+const PlotlyLine = ({ xData = [], yData = [] }) => {
   const chartRef = useRef(null);
   const [isMounted, setIsMounted] = useState(false);
 
@@ -21,9 +18,14 @@ const PlotlyC = ({ xData, yData }) => {
     const colorTextPrimary = styles.getPropertyValue("--color-text-primary").trim();
     const colorAccent = styles.getPropertyValue("--color-accent").trim();
 
-    if (!xData || !yData || xData.length === 0 || yData.length === 0) return;
+    // Verificar si hay datos
+    const hasData = xData.length > 0 && yData.length > 0;
+    // En caso de no tener datos, usamos un rango por defecto para el eje x
+    const minX = hasData ? Math.min(...xData) : 0;
+    const maxX = hasData ? Math.max(...xData) : 1;
 
-    const data = [{
+    // Si no hay datos, la traza es un array vacío para que solo se muestre el layout
+    const data = hasData ? [{
       x: xData,
       y: yData,
       type: 'scatter',
@@ -33,16 +35,9 @@ const PlotlyC = ({ xData, yData }) => {
         width: 2
       },
       name: 'Spectrum'
-    }];
+    }] : [];
 
     const layout = {
-      title: {
-        text: 'Spectrum',
-        font: {
-          color: colorTextPrimary,
-          size: 16
-        }
-      },
       xaxis: {
         title: {
           text: 'Frequency (Hz)',
@@ -55,9 +50,10 @@ const PlotlyC = ({ xData, yData }) => {
         tickfont: { color: colorTextPrimary },
         gridcolor: `${colorTextPrimary}30`,
         linecolor: colorTextPrimary,
-        showline: true,   // Forzamos la visualización de la línea del eje
-        mirror: false,    // Evitamos que se dibuje la línea opuesta
-        zeroline: false   // Desactivamos la línea del cero
+        showline: true,
+        mirror: false,
+        zeroline: false,
+        showgrid: true
       },
       yaxis: {
         title: {
@@ -69,21 +65,22 @@ const PlotlyC = ({ xData, yData }) => {
         },
         tickfont: { color: colorTextPrimary },
         gridcolor: `${colorTextPrimary}30`,
-        linecolor: colorTextPrimary
+        linecolor: colorTextPrimary,
+        showgrid: true
       },
-      paper_bgcolor: 'rgba(0,0,0,0)', // Fondo transparente
-      plot_bgcolor: 'rgba(0,0,0,0)',  // Fondo transparente
+      paper_bgcolor: 'rgba(0,0,0,0)',
+      plot_bgcolor: 'rgba(0,0,0,0)',
       margin: { t: 40, b: 80, l: 80, r: 40 },
-      autosize: true // Asegura que el gráfico se ajuste al contenedor
+      autosize: true
     };
 
+    // Si ya existe una instancia, se actualiza, sino se crea desde cero
     if (chartRef.current.data) {
       Plotly.react(chartRef.current, data, layout);
     } else {
       Plotly.newPlot(chartRef.current, data, layout);
     }
 
-    // Redimensionar el gráfico cuando el contenedor cambie de tamaño
     const handleResize = () => {
       Plotly.Plots.resize(chartRef.current);
     };
@@ -99,11 +96,8 @@ const PlotlyC = ({ xData, yData }) => {
   }, [xData, yData, isMounted]);
 
   return (
-    <div
-      ref={chartRef} 
-      className='plot-container'
-    />
+    <div ref={chartRef} style={{marginTop: -25, marginLeft: -20}}/>
   );
 };
 
-export default PlotlyC;
+export default PlotlyLine;

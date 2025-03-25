@@ -2,16 +2,44 @@
 .main-container {
     display: flex; /* Activa flexbox */
     flex-direction: column; /* Apila los elementos verticalmente */
+    margin: 0;
+    padding: 0;
 }
 
-.top-container {
-    display: flex; /* Activa flexbox */
-    width: 100%;
-    height: 500px; /* Altura deseada */
-}
+  .top-container {
+    display: flex;
+  }
+  
+    .plot-container {
+      flex: 0 0 80%; /* Ocupa el 75% del ancho */
+    }
+    .plot-container h1 {
+      font-size: 1.5rem; /* Tamaño de encabezado moderno */
+      margin: 0 0 0 20px;
+      color: var(--color-text-primary); /* Color destacado */
+    }
+    
+    .info-container {
+      flex: 0 0 20%; /* Ocupa el 25% del ancho */
+    }
+  
 
-.bottom-container {
-    display: flex; /* Activa flexbox */
-    align-items: center;
-    justify-content: center;
-}
+
+  .bottom-container {
+      display: flex; /* Activa flexbox */
+      margin-top: -20px;
+  }
+
+    .heatmap-container {
+      flex: 0 0 30%; /* Ocupa el 50% del ancho */
+    }
+    
+    .user-container {
+      flex: 0 0 70%; /* Ocupa el 50% del ancho */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo {
+      height: 100px;
+    }

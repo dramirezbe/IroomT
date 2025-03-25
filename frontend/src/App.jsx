@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import { SocketProvider } from './SocketContext';
 import SocketJSON from './SocketJSON';
 import Header from './components/Header';
-import PlotlyC from './components/PlotlyC';
+import PlotlyLine from './components/PlotlyLine';
 import InfoPlot from './components/InfoPlot';
-import Heatmap from './components/Heatmap';
+import PlotlyHeat from './components/PlotlyHeat';
+import UserControl from './components/UserControl';
+
+import './App.css';
+
 
 function App() {
   // Estado inicial con valores por defecto
@@ -33,15 +37,28 @@ function App() {
         <Header />
         <main className="main-container">
           <section className="top-container">
-            <PlotlyC xData={f} yData={Pxx} />
-            <InfoPlot band={band} fmin={fmin} fmax={fmax} units={units} measure={measure} />
+            <div className='plot-container'>
+              <h1>Spectrum</h1>
+              <PlotlyLine xData={f} yData={Pxx} />
+            </div>
+            <div className='info-container'>
+              <InfoPlot band={band} fmin={fmin} fmax={fmax} units={units} measure={measure} />
+            </div>
           </section>
           <section className="bottom-container">
-            <Heatmap />
-            {/* Aquí puedes pasar la instancia del socket a UserControls si es necesario */}
+            <div className='heatmap-container'>
+              <PlotlyHeat/>
+            </div>
+            <div className='user-container'>
+              <UserControl/>
+              <img 
+                className="logo" 
+                src="Logo_GCPDS_english.svg" 
+                alt="GCPDS Logo" 
+              />
+            </div>
           </section>
         </main>
-        {/* Componente que se encarga de recibir el JSON vía socket */}
         <SocketJSON onSocketData={handleSocketData} />
       </React.Fragment>
     </SocketProvider>

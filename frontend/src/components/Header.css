@@ -3,21 +3,14 @@
 .header-container {
     display: flex;
     align-items: center;
-    padding-top: 10px;
     background-color: var(--color-primary);
-}
-  
-/* Logo: se recomienda ajustar la altura para mantener el header compacto */
-.logo {
-    height: 100px;
-    margin-right: 400px;
 }
 
 /* Título del header */
 .header-title {
 font-size: 1.8rem;
 color: var(--color-text-primary);
-margin: 0 20px;
+padding: 2px 0 2px 50px;
 flex-grow: 1; /* Permite que el título use el espacio disponible */
 }
 
@@ -26,8 +19,7 @@ flex-grow: 1; /* Permite que el título use el espacio disponible */
 list-style: none;
 display: flex;
 gap: 10px;
-margin: 0;
-padding: 0;
+padding: 0 20px 0 0;
 }
 
 /* Estilo de los enlaces que actúan como botones */

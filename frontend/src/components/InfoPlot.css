@@ -1,14 +1,12 @@
 .Analytics {
     flex: 0.5; /* Mantiene el ancho fijo según su contenido */
-    padding: 20px; /* Espaciado interno cómodo */
+    padding: 0 20px 0 20px; /* Espaciado interno cómodo */
 }
 
 .Analytics h1 {
     font-size: 1.5rem; /* Tamaño de encabezado moderno */
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     color: var(--color-text-primary); /* Color destacado */
-    border-bottom: 2px solid var(--color-text-primary);
-    padding-bottom: 8px;
 }
 
 .Analytics ul {
@@ -19,7 +17,7 @@
 
 .Analytics li {
     font-size: 1rem; /* Tamaño legible */
-    margin-bottom: 12px; /* Espaciado entre ítems */
+    margin: 12px 0 12px 0; /* Espaciado entre ítems */
     padding: 8px 12px; /* Añade padding interno */
     background-color: var(--color-accent); /* Fondo de cada ítem */
     color: var(--color-text-secondary); /* Texto legible sobre el fondo */
