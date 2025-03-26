@@ -16,13 +16,13 @@ int main() {
 
     // Crear el descriptor del socket
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
-        perror("Error al crear el socket");
+        perror("[TCPs] Error creating socket");
         exit(EXIT_FAILURE);
     }
     
     // Permitir la reutilización de la dirección y puerto
     if (setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)) < 0) {
-        perror("Error en setsockopt");
+        perror("[TCPs] Error in setsockopt");
         exit(EXIT_FAILURE);
     }
     
@@ -33,34 +33,34 @@ int main() {
     
     // Asociar el socket a la dirección y puerto especificados
     if (bind(server_fd, (struct sockaddr *)&address, sizeof(address)) < 0) {
-        perror("Error en bind");
+        perror("[TCPs] Bind error");
         exit(EXIT_FAILURE);
     }
     
     // Escuchar conexiones entrantes
     if (listen(server_fd, 3) < 0) {
-        perror("Error en listen");
+        perror("[TCPs] Listen error");
         exit(EXIT_FAILURE);
     }
     
-    printf("Servidor TCP escuchando en el puerto %d\n", PORT);
+    printf("[TCPs] Hearing in port: %d\n", PORT);
     
     // Aceptar una conexión entrante
     if ((client_fd = accept(server_fd, (struct sockaddr *)&address, &addrlen)) < 0) {
-        perror("Error en accept");
+        perror("[TCPs] Accept error");
         exit(EXIT_FAILURE);
     }
     
-    printf("Cliente conectado: %s:%d\n", inet_ntoa(address.sin_addr), ntohs(address.sin_port));
+    printf("[TCPs] Client connected: %s:%d\n", inet_ntoa(address.sin_addr), ntohs(address.sin_port));
     
     // Enviar cada 10 segundos un byte con valor 1 al cliente
     while (1) {
         ssize_t sent = send(client_fd, &is_JSON_ready, sizeof(is_JSON_ready), 0);
         if (sent != sizeof(is_JSON_ready)) {
-            perror("Error al enviar flag");
+            perror("[TCPs] Error sending flag");
             break;
         }
-        printf("Enviado flag = true al cliente\n");
+        printf("[TCPs] Sending flag = true\n");
         sleep(10);
     }
     

@@ -28,13 +28,13 @@ class TcpClient {
         const flag = this.receivedData.readUInt8(0);
         
         if (flag === 1) {
-          console.log('[TCP] JSON created');
+          console.log('[TCPs] JSON created');
           // Ejecutar el callback para leer el JSON
           readJSONCallback((err, socketData) => {
             if (err) {
               console.error("There was an error reading JSON:", err);
             } else {
-              console.log("Read data from JSON");
+              console.log("[TCPc] Read data from JSON");
               // Llamar al callback pasado en el constructor para enviar los datos vía socket.io
               if (this.onJsonData) {
                 this.onJsonData(socketData);
@@ -49,27 +49,27 @@ class TcpClient {
     });
 
     this.tcpClient.on('error', (err) => {
-      console.error('[TCP] Error:', err.message);
+      console.error('[TCPc] Error:', err.message);
       this.isConnected = false;
       this.retryConnection();
     });
 
     this.tcpClient.on('close', () => {
-      console.log('[TCP] Connection Closed');
+      console.log('[TCPc] Connection Closed');
       this.isConnected = false;
       this.retryConnection();
     });
   }
 
-  connect() {
+  connect() {3
     // Si ya está conectado, no se intenta reconectar
     if (this.isConnected) return;
     
     // Iniciar el programa C antes de conectarse
     startCore();
-    console.log('[TCP] trying to connect C_SERVER...');
+    console.log('[TCPc] trying to connect C_SERVER...');
     this.tcpClient.connect(C_SERVER_PORT, C_SERVER_HOST, () => {
-      console.log('[TCP] C_SERVER connected');
+      console.log('[TCPc] C_SERVER connected');
       this.isConnected = true;
     });
   }
@@ -77,7 +77,7 @@ class TcpClient {
   retryConnection() {
     // Solo se reintenta si el cliente no está conectado
     if (!this.isConnected) {
-      console.log('[TCP] Trying reconnect...');
+      console.log('[TCPc3] Trying reconnect...');
       setTimeout(() => {
         // Asegurarse de que el socket anterior se destruya para evitar conflictos
         this.tcpClient.destroy();

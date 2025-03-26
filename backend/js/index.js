@@ -36,7 +36,7 @@ httpServer.listen(PORT, () => {
 // Instanciar el TcpClient y pasarle un callback para emitir los datos vía Socket.io
 const tcpClient = new TcpClient((socketData) => {
   io.emit('jsonData', socketData);
-  console.log('Datos JSON enviados vía Socket.io.');
+  console.log('[WEB] JSON sent');
 });
 
 // Conectar el cliente TCP

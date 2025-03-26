@@ -13,8 +13,6 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "socket.io-client": "^4.8.1",
-    "leaflet": "^1.9.4",
-    "leaflet.heat": "^0.2.0",
     "normalize.css": "^8.0.1",
     "plotly.js-dist": "^3.0.0"
   },
