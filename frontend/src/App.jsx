@@ -24,7 +24,7 @@ function App() {
   });
 
   const handleSocketData = (dataObj) => {
-    console.log("Datos recibidos en App:", dataObj);
+    console.log("[Web] Data received in App:", dataObj);
     setSocketData(dataObj);
   };
 

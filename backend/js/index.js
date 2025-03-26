@@ -24,19 +24,19 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Ruta de prueba en desarrollo
   app.get('/', (req, res) => {
-    res.send('API funcionando en desarrollo');
+    res.send('[TCPc] API working in development mode');
   });
 }
 
 // Iniciar el servidor HTTP
 httpServer.listen(PORT, () => {
-  console.log(`Servidor Express escuchando en el puerto ${PORT}`);
+  console.log(`[TCPc] Express server hearing in port ${PORT}`);
 });
 
 // Instanciar el TcpClient y pasarle un callback para emitir los datos vía Socket.io
 const tcpClient = new TcpClient((socketData) => {
   io.emit('jsonData', socketData);
-  console.log('[WEB] JSON sent');
+  console.log('[TCPc] JSON sent');
 });
 
 // Conectar el cliente TCP

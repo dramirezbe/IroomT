@@ -1,6 +1,5 @@
 const net = require('net');
 const readJSONCallback = require('./handleJSON');
-const { startCore } = require('./handleCore');
 
 const C_SERVER_HOST = 'localhost';
 const C_SERVER_PORT = 8080;
@@ -65,11 +64,9 @@ class TcpClient {
     // Si ya está conectado, no se intenta reconectar
     if (this.isConnected) return;
     
-    // Iniciar el programa C antes de conectarse
-    startCore();
-    console.log('[TCPc] trying to connect C_SERVER...');
+    console.log('[TCPc] trying to connect TCPserver...');
     this.tcpClient.connect(C_SERVER_PORT, C_SERVER_HOST, () => {
-      console.log('[TCPc] C_SERVER connected');
+      console.log('[TCPc] TCPserver connected');
       this.isConnected = true;
     });
   }
@@ -77,7 +74,7 @@ class TcpClient {
   retryConnection() {
     // Solo se reintenta si el cliente no está conectado
     if (!this.isConnected) {
-      console.log('[TCPc3] Trying reconnect...');
+      console.log('[TCPc] Trying reconnection...');
       setTimeout(() => {
         // Asegurarse de que el socket anterior se destruya para evitar conflictos
         this.tcpClient.destroy();

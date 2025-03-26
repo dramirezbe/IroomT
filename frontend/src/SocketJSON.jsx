@@ -9,14 +9,8 @@ const SocketJSON = ({ onSocketData }) => {
     if (!socket) return;
 
     const handleJsonData = (parsed) => {
-      console.log("Datos JSON recibidos:", parsed);
-      // Se espera que 'parsed' tenga la estructura:
-      // {
-      //   data: {
-      //     band, fmin, fmax, units, measure,
-      //     vectors: { Pxx, f }
-      //   }
-      // }
+      console.log("[Web] JSON data received:", parsed);
+      
       if (parsed && parsed.data) {
         const { band, fmin, fmax, units, measure, vectors } = parsed.data;
         const { Pxx, f } = vectors;
