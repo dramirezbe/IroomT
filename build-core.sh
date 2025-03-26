@@ -22,6 +22,3 @@ if [ ! -f "$BINARY" ]; then
 fi
 
 echo "-------- leaving build-core.sh --------"
-
-echo "-------- Init monraf-core --------"
-"$BINARY"
