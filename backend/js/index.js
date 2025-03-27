@@ -1,8 +1,9 @@
+// server.js
 const express = require('express');
 const path = require('path');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
-const TcpClient = require('./tcpClient');
+const readJSONCallback = require('./handleJSON'); // Módulo para leer el JSON
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -24,20 +25,26 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Ruta de prueba en desarrollo
   app.get('/', (req, res) => {
-    res.send('[TCPc] API working in development mode');
+    res.send('[API] Working in development mode');
   });
 }
 
 // Iniciar el servidor HTTP
 httpServer.listen(PORT, () => {
-  console.log(`[TCPc] Express server hearing in port ${PORT}`);
+  console.log(`[API] Express server listening on port ${PORT}`);
 });
 
-// Instanciar el TcpClient y pasarle un callback para emitir los datos vía Socket.io
-const tcpClient = new TcpClient((socketData) => {
-  io.emit('jsonData', socketData);
-  console.log('[TCPc] JSON sent');
-});
+// Función para leer el archivo JSON y emitirlo vía Socket.io
+function emitJSONData() {
+  readJSONCallback((err, socketData) => {
+    if (err) {
+      console.error("Error al leer el JSON:", err);
+    } else {
+      io.emit('jsonData', socketData);
+      console.log('[API] JSON data emitted via socket');
+    }
+  });
+}
 
-// Conectar el cliente TCP
-tcpClient.connect();
+// Leer y emitir el JSON cada 10 segundos
+setInterval(emitJSONData, 10000);
