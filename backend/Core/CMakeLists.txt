@@ -1,16 +1,28 @@
 cmake_minimum_required(VERSION 3.10)
-project(ServidorSignal C)
+project(MainProject C)
 
-set(CMAKE_C_STANDARD 99)
+# Establecer el estándar C
+set(CMAKE_C_STANDARD 11)
 
-# Buscar todos los archivos .c dentro de la carpeta Modules
-file(GLOB MODULE_SOURCES "Modules/*.c")
+# Ubicación de salida del ejecutable: carpeta raíz del proyecto
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-# Crear el ejecutable incluyendo main.c y los módulos encontrados
-add_executable(monraf-core main.c ${MODULE_SOURCES})
+# Lista de archivos fuente
+add_executable(main
+    main.c
+    Drivers/bacn_RF.c
+    Modules/IQ.c
+    Modules/CS8toIQ.c
+    Modules/parameter.c
+    Modules/welch.c
+    Modules/cJSON.c
+    Modules/moda.c
+    Modules/find_closest_index.c
+    Modules/handle_web.c
+)
 
-# Agregar la carpeta Modules a las rutas de inclusión
-target_include_directories(monraf-core PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Modules)
+# Opciones de compilación
+target_compile_options(main PRIVATE -g -fdiagnostics-color=always)
 
-# Enlazar la librería matemática y pthread (esta última incluye funciones relacionadas con señales)
-target_link_libraries(monraf-core m pthread)
+# Enlazar librerías necesarias
+target_link_libraries(main fftw3 m hackrf pthread)

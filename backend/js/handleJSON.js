@@ -1,22 +1,21 @@
-// handleJSON.js
 const fs = require('fs');
 const path = require('path');
 
 // Construir la ruta relativa al archivo .js actual
-const filePath = path.join(__dirname, 'json', '0');
+const filePath = path.join(__dirname, '..', 'Core', 'JSON', '0');
 
 function readJSONCallback(callback) {
   fs.readFile(filePath, 'utf8', (err, jsonString) => {
     if (err) {
-      console.error("Error al leer el archivo:", err);
-      return callback(err, null);
+      // Si ocurre un error al leer, reintentar después de 0.5 segundos
+      return setTimeout(() => readJSONCallback(callback), 500);
     }
     try {
       const parsed = JSON.parse(jsonString);
       return callback(null, parsed);
     } catch (parseError) {
-      console.error("Error al parsear el JSON:", parseError);
-      return callback(parseError, null);
+      // Si ocurre un error al parsear, reintentar después de 0.5 segundos
+      return setTimeout(() => readJSONCallback(callback), 500);
     }
   });
 }

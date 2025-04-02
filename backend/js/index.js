@@ -25,26 +25,26 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // Ruta de prueba en desarrollo
   app.get('/', (req, res) => {
-    res.send('[API] Working in development mode');
+    res.send('[express] Working in development mode');
   });
 }
 
 // Iniciar el servidor HTTP
 httpServer.listen(PORT, () => {
-  console.log(`[API] Express server listening on port ${PORT}`);
+  console.log(`[express] Express server listening on port ${PORT}`);
 });
 
 // Función para leer el archivo JSON y emitirlo vía Socket.io
 function emitJSONData() {
   readJSONCallback((err, socketData) => {
     if (err) {
-      console.error("Error al leer el JSON:", err);
+      console.error("[express] Error al leer el JSON:", err);
     } else {
       io.emit('jsonData', socketData);
-      console.log('[API] JSON data emitted via socket');
+      console.log('[express] JSON data emitted via socket');
     }
   });
 }
 
 // Leer y emitir el JSON cada 10 segundos
-setInterval(emitJSONData, 10000);
+setInterval(emitJSONData, 1000);

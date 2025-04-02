@@ -3,46 +3,52 @@
 #include <unistd.h>
 #include <signal.h>
 
+#include "Drivers/bacn_RF.h"
+#include "Modules/IQ.h"
+#include "Modules/parameter.h"
 #include "Modules/handle_web.h"
 
-// Función para detener el proceso web y salir
-void cleanup_and_exit(int signum) {
-    printf("\n[WEB] Señal %d recibida. Deteniendo el proceso web...\n", signum);
-    if (stop_web() != 0) {
-        fprintf(stderr, "[WEB] Error al detener el proceso web.\n");
-    }
-    exit(EXIT_SUCCESS);
+#define LOFreq 88000000
+#define CeFreq 98000000
+#define HIFreq 108000000
+
+/* Variable global para controlar la ejecución del bucle principal */
+volatile sig_atomic_t running = 1;
+
+/* Manejador de la señal SIGINT para detener el programa */
+void handle_sigint(int sig) {
+    running = 0;
 }
 
-int main() {
-    // Configurar los manejadores de señales para capturar la terminación
-    struct sigaction sa;
-    sa.sa_handler = cleanup_and_exit;
-    sigemptyset(&sa.sa_mask);
-    sa.sa_flags = 0;
-    
-    // Capturar señales SIGINT (Ctrl+C) y SIGTERM
-    sigaction(SIGINT, &sa, NULL);
-    sigaction(SIGTERM, &sa, NULL);
-    
-    // Iniciar el proceso web (npm start)
+int main(void) {
+    /* Registrar el manejador para SIGINT (Ctrl+C) */
+    signal(SIGINT, handle_sigint);
+
+    /* Iniciar el servicio web */
     if (start_web() != 0) {
-        fprintf(stderr, "[WEB] Error al iniciar el proceso web.\n");
-        // En caso de error, asegurarse de detener el proceso web si fuera necesario
-        stop_web();
+        fprintf(stderr, "Error al iniciar el servicio web.\n");
         exit(EXIT_FAILURE);
     }
     
-    printf("[WEB] Proceso web iniciado.\n");
+    int totalSamples;
+    int bands_length;
+    double canalisation[250];
+    double bandwidth[250];
     
-    // Bucle principal que mantiene el programa en ejecución
-    while (1) {
-        sleep(1);
+    /* Bucle principal que mantiene el programa en ejecución */
+    while (running) {
+        bands_length = load_bands(canalisation, bandwidth);
+        printf("Bands length: %d\r\n", bands_length);
+        totalSamples = getSamples(LOFreq, HIFreq);
+        printf("Total files: %d\r\n", totalSamples);
+        parameter(-30, canalisation, bandwidth, bands_length, CeFreq);
+        //sleep(0.5);
     }
     
-    // Código no alcanzado, pero se incluye la detención del proceso web por seguridad.
+    printf("Deteniendo servicio web...\n");
     if (stop_web() != 0) {
-        fprintf(stderr, "[WEB] Error al detener el proceso web.\n");
+        fprintf(stderr, "Error al detener el servicio web.\n");
+        exit(EXIT_FAILURE);
     }
     
     return 0;

@@ -10,15 +10,8 @@ cd "$SCRIPT_DIR/backend/Core" || { echo "No se pudo acceder a 'backend'"; exit 1
 
 mkdir -p build && cd build || { echo "Error con 'build'"; exit 1; }
 
-echo "Ejecutando cmake .."
+echo "Executing cmake .."
 cmake ..
-echo "Ejecutando make"
+echo "Executing make"
 make
-
-BINARY="$PWD/monraf-core"
-if [ ! -f "$BINARY" ]; then
-    echo "Error: No se encontró $BINARY"
-    exit 1
-fi
-
 echo "-------- leaving build-core.sh --------"
