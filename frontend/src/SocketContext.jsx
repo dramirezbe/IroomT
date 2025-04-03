@@ -2,7 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import io from 'socket.io-client';
 
 // URL del servidor o configuración del socket
-const SOCKET_SERVER_URL = 'http://localhost:3001';
+const SOCKET_SERVER_URL = 'http://192.168.112.112:3001';
+
 
 const SocketContext = createContext(null);
 
