@@ -35,11 +35,13 @@
     }
     
     .user-container {
-      flex: 0 0 70%; /* Ocupa el 50% del ancho */
+      flex: 0 0 70%;
       display: flex;
-      flex-direction: column;
+      justify-content: center; /* Centra horizontalmente */
+      align-items: center;     /* Centra verticalmente */
+            
     }
 
     .logo {
-      height: 100px;
+      height: 200px;
     }

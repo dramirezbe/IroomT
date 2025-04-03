@@ -6,7 +6,6 @@ import Header from './components/Header';
 import PlotlyLine from './components/PlotlyLine';
 import InfoPlot from './components/InfoPlot';
 import PlotlyHeat from './components/PlotlyHeat';
-import UserControl from './components/UserControl';
 
 import './App.css';
 
@@ -50,7 +49,6 @@ function App() {
               <PlotlyHeat/>
             </div>
             <div className='user-container'>
-              <UserControl/>
               <img 
                 className="logo" 
                 src="Logo_GCPDS_english.svg" 
