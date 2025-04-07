@@ -11,9 +11,6 @@
 #define PATH_MAX 4096
 #endif
 
-/* Se define SIGTERM sin incluir <signal.h> */
-#define SIGTERM 15
-
 /* Variable estática para almacenar el PID del proceso que ejecuta npm start. */
 static pid_t npm_pid = -1;
 
@@ -52,12 +49,8 @@ int stop_web(void) {
         fprintf(stderr, "stop_web() Web process is not running.\n");
         return -1;
     }
-    /* Enviar SIGTERM para detener el proceso hijo */
-    if (kill(npm_pid, SIGTERM) != 0) {
-        perror("stop_web() Error terminating npm process");
-        return 1;
-    }
-    /* Esperar a que el proceso hijo termine */
+
+    /* Eliminar intento de enviar señal; simplemente esperar a que el proceso termine (si es que lo hace solo) */
     int status;
     waitpid(npm_pid, &status, 0);
     printf("stop_web() Web process with PID %d finished.\n", npm_pid);
