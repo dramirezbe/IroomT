@@ -15,14 +15,8 @@
 /* Variable global para controlar la ejecución del bucle principal */
 volatile sig_atomic_t running = 1;
 
-/* Manejador de la señal SIGINT para detener el programa */
-void handle_sigint(int sig) {
-    running = 0;
-}
 
 int main(void) {
-    /* Registrar el manejador para SIGINT (Ctrl+C) */
-    signal(SIGINT, handle_sigint);
 
     /* Iniciar el servicio web */
     if (start_web() != 0) {

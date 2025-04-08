@@ -91,10 +91,16 @@ int rx_callback(hackrf_transfer* transfer)
 	return 0;
 }
 
+extern volatile sig_atomic_t running;
 void sigint_callback_handler(int signum)
 {
+	if (signum == 2) {
+		running = 0;
+		do_exit = true;
+	}
 	fprintf(stderr, "Caught signal %d\n", signum);
 	do_exit = true;
+
 }
 
 void sigalrm_callback_handler()
