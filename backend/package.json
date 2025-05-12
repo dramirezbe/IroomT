@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "nodemon js/index.js",
     "start": "node js/index.js",
-    "build": "echo 'No hay build para backend' && exit 0"
+    "build": "echo 'No build for backend' && exit 0"
   },
   "dependencies": {
     "child_process": "^1.0.2",

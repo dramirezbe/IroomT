@@ -9,6 +9,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm run dev --workspace=backend\" \"npm run dev --workspace=frontend\"",
+    "prestart": "node common/path_handler.js",
     "start": "if [ ! -d \"frontend/dist\" ]; then npm run build --workspace=frontend; fi && NODE_ENV=production npm run start --workspace=backend"
   },
   "repository": {

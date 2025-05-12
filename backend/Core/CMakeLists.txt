@@ -1,28 +1,33 @@
+# Define the minimum required CMake version
 cmake_minimum_required(VERSION 3.10)
+
+# Define the project name and language
 project(MainProject C)
 
-# Establecer el estándar C
+# Set the C standard version
 set(CMAKE_C_STANDARD 11)
 
-# Ubicación de salida del ejecutable: carpeta raíz del proyecto
+# Set output directory for the executable
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
-# Lista de archivos fuente
-add_executable(main
-    main.c
-    Drivers/bacn_RF.c
-    Modules/IQ.c
-    Modules/CS8toIQ.c
-    Modules/parameter.c
-    Modules/welch.c
-    Modules/cJSON.c
-    Modules/moda.c
-    Modules/find_closest_index.c
-    Modules/handle_web.c
+# Use GLOB to find all .c files dynamically
+file(GLOB SOURCE_FILES
+     "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Modules/*.c"
+     #"${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c"
 )
 
-# Opciones de compilación
+# Add an executable target
+add_executable(main ${SOURCE_FILES})
+
+# Specify include directories
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}/Modules
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+# Compilation options
 target_compile_options(main PRIVATE -g -fdiagnostics-color=always)
 
-# Enlazar librerías necesarias
-target_link_libraries(main fftw3 m hackrf pthread)
+# Link necessary libraries
+target_link_libraries(main fftw3 m pthread) # activar hackrf después

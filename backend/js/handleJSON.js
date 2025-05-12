@@ -1,23 +1,47 @@
+// handleJSON.js
 const fs = require('fs');
 const path = require('path');
 
-// Construir la ruta relativa al archivo .js actual
-const filePath = path.join(__dirname, '..', 'Core', 'JSON', '0');
+/**
+ * @param {string} dirPath
+ *   Absolute path to the folder with JSON files named "0", "1", "2", …
+ */
+module.exports = function createJSONReader(dirPath) {
+  let currentIndex = 0;
 
-function readJSONCallback(callback) {
-  fs.readFile(filePath, 'utf8', (err, jsonString) => {
-    if (err) {
-      // Si ocurre un error al leer, reintentar después de 0.5 segundos
-      return setTimeout(() => readJSONCallback(callback), 500);
-    }
-    try {
-      const parsed = JSON.parse(jsonString);
-      return callback(null, parsed);
-    } catch (parseError) {
-      // Si ocurre un error al parsear, reintentar después de 0.5 segundos
-      return setTimeout(() => readJSONCallback(callback), 500);
-    }
-  });
-}
+  /**
+   * On each invocation, do up to 10 instantaneous attempts:
+   *  - Read/parse at currentIndex.
+   *  - On success: callback(null, data) and currentIndex++ for next tick.
+   *  - On failure: if currentIndex!==0, reset to 0 and retry immediately.
+   *    Otherwise keep trying at 0.
+   *  - If 10 straight failures, callback(error).
+   */
+  return function readJSONWithRetries(callback) {
+    let lastError = null;
 
-module.exports = readJSONCallback;
+    for (let attempt = 1; attempt <= 10; attempt++) {
+      const filePath = path.resolve(dirPath, String(currentIndex));
+
+      try {
+        const jsonString = fs.readFileSync(filePath, 'utf8');
+        const parsed = JSON.parse(jsonString);
+
+        // success: prepare for next tick
+        currentIndex++;
+        return callback(null, parsed);
+
+      } catch (err) {
+        lastError = err;
+        // if we weren’t already at 0, reset and retry quickly at 0
+        if (currentIndex !== 0) {
+          currentIndex = 0;
+        }
+        // else stay at 0 and retry immediately
+      }
+    }
+
+    // after 10 tries, give up
+    callback(lastError);
+  };
+};
