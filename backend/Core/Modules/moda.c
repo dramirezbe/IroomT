@@ -4,7 +4,7 @@
 #include "moda.h"
 
 double find_min(double *array, size_t size) {
-    double min = 1000; // Inicializamos con el máximo valor posible para double
+    double min = 1000; // Initialize with a large value (Note: using DBL_MAX from <float.h> is safer for actual maximum value)
     for (size_t i = 0; i < size; i++) {
         if (array[i] < min) {
             min = array[i];
@@ -15,37 +15,37 @@ double find_min(double *array, size_t size) {
 
 double find_max(double *array, int lower_index, int upper_index) {
     int size = upper_index - lower_index;
-    double max = array[lower_index];  // Inicializamos max con el primer valor en el rango
+    double max = array[lower_index];  // Initialize max with the first value in the range
     for (size_t i = 0; i < size; i++) {
         if (array[lower_index + i] > max) {
-            max = array[lower_index + i];  // Corregimos el acceso a array[lower_index + i]
+            max = array[lower_index + i];  // Corrected access to array[lower_index + i]
         }
     }
     return max;
 }
 
 
-// Función para hacer slicing
+// Function to perform slicing
 double* slice(double* array, int lower_index, int upper_index) {
-    // Calcula el tamaño del nuevo array
+    // Calculate the size of the new array
     int size = upper_index - lower_index;
-    if(size>9830){
-        size=9830;
-     }
+    if(size > 9830){
+        size = 9830;
+    }
 
-    // Reserva memoria para el nuevo array
+    // Allocate memory for the new array
     double* sliced_array = (double*)malloc(size * sizeof(double));
     if (sliced_array == NULL) {
-        perror("Error al asignar memoria");
+        perror("Error allocating memory");
         exit(EXIT_FAILURE);
     }
 
-    // Copia los valores desde el rango especificado
+    // Copy values from the specified range
     for (int i = 0; i < size; i++) {
         sliced_array[i] = array[lower_index + i];
         printf("sliced_array: %f\n",sliced_array[i]);
     }
-    
+
 
     return sliced_array;
 }

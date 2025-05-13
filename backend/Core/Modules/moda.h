@@ -1,10 +1,18 @@
+/**
+ * @file moda.h
+ * @brief Header file for mode calculation functions.
+ *
+ * This file contains declarations for functions related to statistical calculations,
+ * specifically focusing on finding the mode and auxiliary functions like finding
+ * minimum and maximum values and slicing arrays.
+ */
 #ifndef MODE_CALCULATION_H
 #define MODE_CALCULATION_H
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <stddef.h> // Para el tipo size_t
+#include <stddef.h> // For size_t type
 
 // Función para calcular el valor mínimo en un vector de doubles
 double find_min(double *array, size_t size);

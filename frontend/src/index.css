@@ -1,7 +1,7 @@
 @import 'normalize.css';
 
 :root {
-  /* Colores */
+  /* Colors */
   --color-primary: #D8C4B6;
   --color-secondary: rgb(19,99,166);
   --color-text-primary: #213555;
@@ -12,21 +12,22 @@
   --color-alt-accent: #EB459E;
   --color-danger: #ED4245;
 
-
-  --intensity-0: #b9ffff; /*0*/
-  --intensity-1: #81c9fa; /*0.25*/
-  --intensity-2: #2196f3; /*0.5*/
-  --intensity-3: #1465bb; /*0.75*/ 
-  --intensity-4: #003785; /*1*/
+  /* Intensity levels for gradient or heatmap visuals */
+  --intensity-0: #b9ffff; /* intensity level 0 */
+  --intensity-1: #81c9fa; /* intensity level 0.25 */
+  --intensity-2: #2196f3; /* intensity level 0.5 */
+  --intensity-3: #1465bb; /* intensity level 0.75 */
+  --intensity-4: #003785; /* intensity level 1 */
   
-  /* Fuentes */
+  /* Font families */
   --font-primary: 'Roboto Mono', monospace;
   --font-secondary: 'Open Sans', sans-serif;
   --font-code: 'Fira Code', monospace;
 
+  /* Base background and text colors */
   background-color: var(--color-primary);
   color: var(--color-text-primary);
 
-  font-family: var(--font-code); /* Fuente moderna y limpia */
-
+  /* Default font for a clean, modern look */
+  font-family: var(--font-code);
 }

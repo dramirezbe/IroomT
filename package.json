@@ -1,5 +1,5 @@
 {
-  "name": "gcpds-monraf2-platform",
+  "name": "IroomT",
   "version": "1.0.0",
   "main": "index.js",
   "private": true,
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dramirezbe/GCPDS-MonRaF2-platform.git"
+    "url": "git+https://github.com/dramirezbe/IroomT"
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
@@ -24,8 +24,8 @@
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/dramirezbe/GCPDS-MonRaF2-platform/issues"
+    "url": "https://github.com/dramirezbe/IroomT"
   },
-  "homepage": "https://github.com/dramirezbe/GCPDS-MonRaF2-platform#readme",
+  "homepage": "https://github.com/dramirezbe/IroomT#readme",
   "description": ""
 }

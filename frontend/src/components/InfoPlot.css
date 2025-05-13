@@ -1,29 +1,47 @@
+/* Analytics Panel Styles */
+
+/*
+ * Container for analytics list: flexible width, comfortable padding
+ */
 .Analytics {
-    flex: 0.5; /* Mantiene el ancho fijo según su contenido */
-    padding: 0 20px 0 20px; /* Espaciado interno cómodo */
+    flex: 0.5;                     /* Maintain width based on content size */
+    padding: 0 20px;               /* Horizontal padding for inner spacing */
 }
 
+/*
+ * Header styling for analytics section
+ */
 .Analytics h1 {
-    font-size: 1.5rem; /* Tamaño de encabezado moderno */
-    margin-bottom: 10px;
-    color: var(--color-text-primary); /* Color destacado */
+    font-size: 1.5rem;             /* Modern, readable heading size */
+    margin-bottom: 10px;           /* Space below heading */
+    color: var(--color-text-primary); /* Use primary text color variable */
 }
 
+/*
+ * Remove default list styling and reset spacing
+ */
 .Analytics ul {
-    list-style: none; /* Quita los puntos predeterminados */
-    padding: 0; /* Sin padding para alineación limpia */
-    margin: 0;
+    list-style: none;              /* Remove bullet points */
+    padding: 0;                    /* Reset inner padding */
+    margin: 0;                     /* Reset outer margin */
 }
 
+/*
+ * Individual list items: readable text, styled background, and hover effects
+ */
 .Analytics li {
-    font-size: 1rem; /* Tamaño legible */
-    margin: 12px 0 12px 0; /* Espaciado entre ítems */
-    padding: 8px 12px; /* Añade padding interno */
-    background-color: var(--color-accent); /* Fondo de cada ítem */
-    color: var(--color-text-secondary); /* Texto legible sobre el fondo */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Animación suave */
+    font-size: 1rem;               /* Legible font size */
+    margin: 12px 0;                /* Vertical spacing between items */
+    padding: 8px 12px;             /* Inner padding for a comfortable click target */
+    background-color: var(--color-accent); /* Accent color background */
+    color: var(--color-text-secondary);    /* Secondary text color for contrast */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth hover animations */
 }
 
+/*
+ * Hover effect for interactive feedback: slight lift and subtle shadow
+ */
 .Analytics li:hover {
-    transform: translateY(-4px); /* Efecto hover */
+    transform: translateY(-4px);   /* Lift item on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
 }

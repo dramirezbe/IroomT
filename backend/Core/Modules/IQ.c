@@ -4,45 +4,21 @@
 #include <string.h>
 #include <complex.h>
 #include <unistd.h>
-
 #include "IQ.h"
 
-void delete_CS8(uint8_t file_sample)
-{
-    char file_path[60];
-    memset(file_path, 0, 20);
-    sprintf(file_path, "backend/Core/Samples/%d", file_sample);
-
-    if (remove(file_path) != 0) {
-        fprintf(stderr, "Error al eliminar el archivo Sample %s.\n", file_path);
-    } else {
-        printf("Archivo Sample %s eliminado correctamente.\n", file_path);
-    }
-}
-
-void delete_JSON(uint8_t file_json)
-{
-    char file_path[60];
-    memset(file_path, 0, 20);
-    sprintf(file_path, "backend/Core/JSON/%d", file_json);
-
-    if (remove(file_path) != 0) {
-        fprintf(stderr, "Error al eliminar el archivo JSON %s.\n", file_path);
-    } else {
-        printf("Archivo JSON %s eliminado correctamente.\n", file_path);
-    }
-}
-
-int load_bands(double* frequencies, double* bandwidths)
+int load_bands(double* frequencies, double* bandwidths, env_path_t *paths)
 {
 
     char temp_buffer[MAX_BAND_SIZE];
     char *token;
     int num_rows = 0;
     int i = 0;
-    const char *file_band = NULL;
+    //const char *file_band = NULL;
 
-    file_band = "backend/Core/bands/VHF1.csv";
+    char csv_relative_path[256] = "/VHF1.csv";
+    char file_band[256];
+    snprintf(file_band, sizeof(paths->core_bands_path), "%s%s", paths->core_bands_path, csv_relative_path);
+
 
     FILE *file = fopen(file_band, "r");
     if (!file) {

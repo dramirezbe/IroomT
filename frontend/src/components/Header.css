@@ -1,56 +1,64 @@
+/*
+ * Styles for the header component
+ *
+ * .header-container: horizontal flex layout with centered items.
+ * .header-title: prominent title that grows to fill available space.
+ * .navigation .menu: horizontal list for navigation links.
+ * .navigation .menu li a: styled link-buttons with hover transition.
+ * Responsive media query for smaller screens.
+ */
 
-/* Estilos para el header */
+/* Container for the header section */
 .header-container {
-    display: flex;
-    align-items: center;
+    display: flex;           /* Enable Flexbox for layout */ /* ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/CSS/display?utm_source=chatgpt.com)) */
+    align-items: center;     /* Vertically center items */  /* ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/CSS/align-items?utm_source=chatgpt.com)) */
     background-color: var(--color-primary);
 }
 
-/* Título del header */
+/* Main title inside the header */
 .header-title {
-font-size: 1.8rem;
-color: var(--color-text-primary);
-padding: 2px 0 2px 50px;
-flex-grow: 1; /* Permite que el título use el espacio disponible */
+    font-size: 1.8rem;        /* Modern, large heading */
+    color: var(--color-text-primary);
+    padding: 2px 0 2px 50px;   /* Vertical padding and left indent */
+    flex-grow: 1;              /* Expand to fill remaining space */ /* ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Glossary/Flex?utm_source=chatgpt.com)) */
 }
 
-/* Menú de navegación: se organiza horizontalmente */
+/* Navigation menu styling */
 .navigation .menu {
-list-style: none;
-display: flex;
-gap: 10px;
-padding: 0 20px 0 0;
+    list-style: none;          /* Remove default bullets */
+    display: flex;             /* Horizontal menu items */ /* ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/CSS/flex?utm_source=chatgpt.com)) */
+    gap: 10px;                 /* Spacing between menu items */
+    padding: 0 20px 0 0;
 }
 
-/* Estilo de los enlaces que actúan como botones */
+/* Link-buttons inside the navigation menu */
 .navigation .menu li a {
-display: inline-block;
-padding: 8px 12px;
-background-color: var(--color-accent);
-color: var(--color-text-secondary);
-text-decoration: none;
-transition: background-color 0.3s ease;
+    display: inline-block;     /* Allow padding and background */
+    padding: 8px 12px;
+    background-color: var(--color-accent);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    transition: background-color 0.3s ease;
 }
 
-/* Efecto hover en los botones */
+/* Hover effect for link-buttons */
 .navigation .menu li a:hover {
-background-color: #00bcd4;
+    background-color: #00bcd4; /* Highlight on hover */
 }
 
-/* Opcional: ajustes responsive para pantallas pequeñas */
-@media (max-width: 768px) {
-.header-container {
-    flex-direction: column;
-    align-items: flex-start;
-}
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) { /* ([developer.mozilla.org](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries?utm_source=chatgpt.com)) */
+    .header-container {
+        flex-direction: column;    /* Stack items vertically */
+        align-items: flex-start;   /* Align items to left */
+    }
 
-.header-title {
-    margin: 1px 1px;
-}
+    .header-title {
+        margin: 1px 1px;           /* Adjust spacing on mobile */
+    }
 
-.navigation .menu {
-    flex-wrap: wrap;
-    gap: 5px;
+    .navigation .menu {
+        flex-wrap: wrap;           /* Allow wrapping of items */
+        gap: 5px;                  /* Reduced gap on smaller screens */
+    }
 }
-}
-  

@@ -48,8 +48,9 @@ const ROOT_PATH = path.resolve(__dirname, '..');
 // Define various project paths based on the project root
 const WEB_BUILD_PATH    = path.join(ROOT_PATH, 'frontend', 'dist');
 const CORE_PATH         = path.join(ROOT_PATH, 'backend', 'Core');
-const CORE_SAMPLES_PATH = path.join(CORE_PATH, 'Samples');
+const CORE_SAMPLES_PATH = path.join(CORE_PATH, 'Samples') + path.sep;
 const CORE_JSON_PATH    = path.join(CORE_PATH, 'JSON');
+const CORE_BANDS_PATH   = path.join(CORE_PATH, 'bands'); 
 
 // Get the local IP address
 const VITE_SERVER_IP = getLocalIpAddress();
@@ -68,6 +69,7 @@ const envContentLines = [
   `CORE_PATH=${CORE_PATH}`,
   `CORE_SAMPLES_PATH=${CORE_SAMPLES_PATH}`,
   `CORE_JSON_PATH=${CORE_JSON_PATH}`,
+  `CORE_BANDS_PATH=${CORE_BANDS_PATH}`,
   ``,
   `# Server Configuration`,
   `VITE_SERVER_IP=${VITE_SERVER_IP || '127.0.0.1'}`, // Fallback to localhost if IP not found

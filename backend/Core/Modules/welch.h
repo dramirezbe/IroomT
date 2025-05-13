@@ -1,49 +1,44 @@
 /**
  * @file welch.h
- * @brief Definición de funciones que calcula la Densidad Espectral de Potencia de un array complejo y genera sus frecuencias asociadas.
+ * @brief Function definitions for computing the Power Spectral Density (PSD) of a complex signal using Welch's method.
  *
- * Esta función permite almacenar datos de frecuencias y densidades espectrales de potencia (PSD)
- * en un archivo CSV con formato adecuado para análisis posterior.
+ * Provides functions to compute the PSD and its associated frequency bins,
+ * and optionally export the results to a CSV file.
  */
-
 
 #ifndef WELCH_H
 #define WELCH_H
 
-#include <stddef.h>   // Para size_t
-#include <complex.h>  // Para el tipo double complex
+#include <stddef.h>
+#include <complex.h>
 
 #define PI 3.14159265358979323846
 
 /**
- * @brief Genera una ventana de Hamming.
- * 
- * Esta función genera una ventana de Hamming de longitud `segment_length` y
- * almacena los valores en el arreglo `window`.
+ * @brief Generate a Hamming window.
  *
- * @param window Un puntero al arreglo donde se almacenarán los valores de la ventana de Hamming.
- * @param segment_length La longitud del segmento para la ventana de Hamming.
+ * Fills the given array with Hamming window values of specified length.
+ *
+ * @param window Pointer to the array where the window values will be stored.
+ * @param segment_length Length of the Hamming window.
  */
-
 void generate_hamming_window(double* window, int segment_length);
 
-
 /**
- * @brief Calcula la Densidad Espectral de Potencia (PSD) de Welch para señales complejas.
- * 
- * Esta función aplica el método de Welch para calcular la PSD de una señal compleja de entrada.
- * Divide la señal en segmentos superpuestos, aplica una ventana de Hamming a cada segmento,
- * realiza la Transformada de Fourier en cada segmento, y promedia las potencias espectrales.
+ * @brief Compute the Power Spectral Density (PSD) of a complex signal using Welch's method.
  *
- * @param signal Puntero a la señal de entrada de tipo `complex double`.
- * @param N_signal Tamaño de la señal de entrada.
- * @param fs Frecuencia de muestreo de la señal de entrada.
- * @param segment_length Longitud de cada segmento en el que se divide la señal.
- * @param overlap Factor de solapamiento entre segmentos (0 a 1).
- * @param f_out Puntero al arreglo donde se almacenarán las frecuencias de salida.
- * @param P_welch_out Puntero al arreglo donde se almacenarán los valores calculados de la PSD.
- * 
- * @note Es necesario liberar la memoria reservada para la FFT usando `fftw_destroy_plan` y `fftw_free`.
+ * This function segments the input signal, applies a Hamming window to each segment,
+ * performs the FFT, and averages the periodograms to estimate the PSD.
+ *
+ * @param signal Pointer to the input complex signal.
+ * @param N_signal Number of samples in the input signal.
+ * @param fs Sampling frequency.
+ * @param segment_length Length of each segment.
+ * @param overlap Overlap factor between segments (range: 0 to 1).
+ * @param f_out Output array for frequency bins (must be of size segment_length).
+ * @param P_welch_out Output array for the PSD values (must be of size segment_length).
+ *
+ * @note Ensure to free FFT resources using `fftw_destroy_plan` and `fftw_free`.
  *
  * @example
  * @code
@@ -57,7 +52,7 @@ void generate_hamming_window(double* window, int segment_length);
  * welch_psd_complex(signal, N_signal, fs, segment_length, overlap, f_out, P_welch_out);
  * @endcode
  */
-void welch_psd_complex(complex double* signal, size_t N_signal, double fs, 
+void welch_psd_complex(complex double* signal, size_t N_signal, double fs,
                        int segment_length, double overlap, double* f_out, double* P_welch_out);
 
 #endif // WELCH_H

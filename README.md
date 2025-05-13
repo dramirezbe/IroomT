@@ -17,8 +17,8 @@ nvm install 22.13.1
 
 ## Inicializar web:
 ```bash
-git clone https://github.com/dramirezbe/GCPDS-MonRaF2-platform.git
-cd GCPDS-MonRaF2-platform
+git clone https://github.com/dramirezbe/IroomT
+cd IroomT
 npm install
 cd frontend
 npm run build
@@ -102,3 +102,59 @@ Acceder a la aplicación en el navegador:
 ```javascript
 http://localhost:3001
 ```
+
+
+# Configurar IroomT, sin KIOSK
+
+## Actualizar e Instalar:
+```bash
+sudo apt update && sudo apt upgrade
+sudo apt install curl cmake chromium-browser git gcc -y
+```
+## instalar Node
+
+```bash
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+nvm install 22.13.1
+
+```
+
+## Instalar librerías hackrf
+
+ir a ```https://github.com/greatscottgadgets/hackrf/tree/master/host```
+
+seguir el tutorial para hacer build al driver de la hack y sus librerías en C
+
+## Inicializar web (Antes, colocar en Samples los archivos crudos de adquisición del SDR):
+```bash
+git clone https://github.com/dramirezbe/IroomT
+cd IroomT
+npm i
+
+cd frontend
+npm run build
+cd ..
+
+chmod +x build-core.sh
+./build-core.sh
+
+chmod +x init-core.sh
+./init-core.sh
+
+#Probar npm start (refrescar configuración inicial)
+npm start
+
+#Volver a buildear (recomendable)
+cd frontend
+npm run build
+cd ..
+
+# Ahora inicia con init-core.sh
+```
+Ahora ya debería funcionar. Utiliza ```./init-core.sh```

@@ -55,5 +55,4 @@ function emitJSONData() {
   });
 }
 
-// send (or fail+exit) every second
 setInterval(emitJSONData, 1000);

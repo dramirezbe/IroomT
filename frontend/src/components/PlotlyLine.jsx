@@ -1,51 +1,61 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Plotly from 'plotly.js-dist';
 
-
+/**
+ * PlotlyLine React component
+ * Renders a dynamic line chart of frequency vs. magnitude using Plotly.js.
+ * It reacts to data changes and window resize events, preserving performance by
+ * updating existing plots when possible.
+ *
+ * @param {{ xData?: number[], yData?: number[] }} props
+ * @param {number[]} [props.xData=[]] - Array of frequency values for the x-axis
+ * @param {number[]} [props.yData=[]] - Array of magnitude values for the y-axis
+ * @returns {JSX.Element} A div container for the Plotly chart (renders no children)
+ */
 const PlotlyLine = ({ xData = [], yData = [] }) => {
+  // Ref for the chart DOM element
   const chartRef = useRef(null);
+
+  // Track mount status to avoid operations on unmounted component
   const [isMounted, setIsMounted] = useState(false);
 
+  // Set mount flag on mount/unmount
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
 
   useEffect(() => {
+    // Only run when component is mounted and ref is available
     if (!isMounted || !chartRef.current) return;
 
+    // Retrieve CSS custom properties for theming
     const styles = getComputedStyle(document.documentElement);
-    const colorTextPrimary = styles.getPropertyValue("--color-text-primary").trim();
-    const colorAccent = styles.getPropertyValue("--color-accent").trim();
+    const colorTextPrimary = styles.getPropertyValue('--color-text-primary').trim();
+    const colorAccent = styles.getPropertyValue('--color-accent').trim();
 
-    // Verificar si hay datos
+    // Determine if data arrays have values
     const hasData = xData.length > 0 && yData.length > 0;
-    // En caso de no tener datos, usamos un rango por defecto para el eje x
+    // Default x-axis range if no data
     const minX = hasData ? Math.min(...xData) : 0;
     const maxX = hasData ? Math.max(...xData) : 1;
 
-    // Si no hay datos, la traza es un array vacío para que solo se muestre el layout
-    const data = hasData ? [{
-      x: xData,
-      y: yData,
-      type: 'scatter',
-      mode: 'lines',
-      line: {
-        color: colorAccent,
-        width: 2
-      },
-      name: 'Spectrum'
-    }] : [];
+    // Prepare trace data or empty array for layout-only display
+    const data = hasData
+      ? [{
+          x: xData,
+          y: yData,
+          type: 'scatter',
+          mode: 'lines',
+          line: { color: colorAccent, width: 2 },
+          name: 'Spectrum'
+        }]
+      : [];
 
+    // Plotly layout configuration
     const layout = {
       xaxis: {
-        title: {
-          text: 'Frequency (Hz)',
-          font: {
-            color: colorTextPrimary,
-            size: 14
-          }
-        },
+        title: { text: 'Frequency (Hz)', font: { color: colorTextPrimary, size: 14 } },
         range: [minX, maxX],
         tickfont: { color: colorTextPrimary },
         gridcolor: `${colorTextPrimary}30`,
@@ -56,13 +66,7 @@ const PlotlyLine = ({ xData = [], yData = [] }) => {
         showgrid: true
       },
       yaxis: {
-        title: {
-          text: 'Magnitude (dB)',
-          font: {
-            color: colorTextPrimary,
-            size: 14
-          }
-        },
+        title: { text: 'Magnitude (dB)', font: { color: colorTextPrimary, size: 14 } },
         tickfont: { color: colorTextPrimary },
         gridcolor: `${colorTextPrimary}30`,
         linecolor: colorTextPrimary,
@@ -74,19 +78,20 @@ const PlotlyLine = ({ xData = [], yData = [] }) => {
       autosize: true
     };
 
-    // Si ya existe una instancia, se actualiza, sino se crea desde cero
+    // Create new plot or update existing one
     if (chartRef.current.data) {
       Plotly.react(chartRef.current, data, layout);
     } else {
       Plotly.newPlot(chartRef.current, data, layout);
     }
 
+    // Resize handler to keep chart responsive
     const handleResize = () => {
       Plotly.Plots.resize(chartRef.current);
     };
-
     window.addEventListener('resize', handleResize);
 
+    // Cleanup: remove chart and event listener
     return () => {
       if (chartRef.current && isMounted) {
         Plotly.purge(chartRef.current);
@@ -95,9 +100,8 @@ const PlotlyLine = ({ xData = [], yData = [] }) => {
     };
   }, [xData, yData, isMounted]);
 
-  return (
-    <div ref={chartRef} style={{marginTop: -25, marginLeft: -20}}/>
-  );
+  // Render an empty div that Plotly binds to
+  return <div ref={chartRef} style={{ marginTop: -25, marginLeft: -20 }} />;
 };
 
 export default PlotlyLine;

@@ -1,9 +1,9 @@
 /**
  * @file find_closest_index.c
- * @brief Función para encontrar el índice más cercano a un valor en un arreglo.
- * 
- * Este archivo contiene la declaración de la función `find_closest_index`, que se utiliza para 
- * encontrar el índice del elemento más cercano a un valor dado en un arreglo de números de punto flotante.
+ * @brief Function to find the index closest to a value in an array.
+ *
+ * This file contains the implementation of the `find_closest_index` function, which is used to
+ * find the index of the element closest to a given value in an array of floating-point numbers.
  */
 #include <stdio.h>
 #include <math.h>

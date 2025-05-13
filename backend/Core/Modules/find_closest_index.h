@@ -1,9 +1,9 @@
 /**
  * @file find_closest_index.h
- * @brief Declaración de la función para encontrar el índice más cercano a un valor en un arreglo.
- * 
- * Este archivo contiene la declaración de la función `find_closest_index`, que se utiliza para 
- * encontrar el índice del elemento más cercano a un valor dado en un arreglo de números de punto flotante.
+ * @brief Declaration of the function to find the index closest to a value in an array.
+ *
+ * This file contains the declaration of the `find_closest_index` function, which is used to
+ * find the index of the element closest to a given value in an array of floating-point numbers.
  */
 
 #ifndef FIND_CLOSEST_INDEX_H
@@ -14,26 +14,26 @@
 #include <math.h>
 
 /**
- * @brief Encuentra el índice del elemento en el arreglo que está más cerca de un valor dado.
- * 
- * Esta función recorre un arreglo de números de punto flotante (`double`)
- * y calcula la diferencia absoluta entre cada elemento y el valor objetivo `value`.
- * Retorna el índice del elemento cuya diferencia es la menor.
+ * @brief Finds the index of the element in the array that is closest to a given value.
  *
- * @param array Un puntero al arreglo de valores de tipo `double`.
- * @param length La cantidad de elementos en el arreglo.
- * @param value El valor al cual se desea encontrar el elemento más cercano.
- * 
- * @return El índice del elemento en el arreglo que es más cercano al valor dado `value`.
- * 
- * @note Si el arreglo contiene varios elementos a la misma distancia de `value`,
- *       la función retorna el índice del primer elemento encontrado.
- * 
+ * This function iterates through an array of double-precision floating-point numbers (`double`)
+ * and calculates the absolute difference between each element and the target value `value`.
+ * It returns the index of the element whose difference is the smallest.
+ *
+ * @param array A pointer to the array of `double` values.
+ * @param length The number of elements in the array.
+ * @param value The value to which the closest element is to be found.
+ *
+ * @return The index of the element in the array that is closest to the given value `value`.
+ *
+ * @note If the array contains multiple elements at the same distance from `value`,
+ * the function returns the index of the first element found.
+ *
  * @example
  * @code
  * double array[] = {1.2, 3.4, 5.6, 7.8};
  * int closest_index = find_closest_index(array, 4, 4.0);
- * // closest_index será 1, ya que 3.4 es el valor más cercano a 4.0 en el arreglo.
+ * // closest_index will be 1, since 3.4 is the value closest to 4.0 in the array.
  * @endcode
  */
 int find_closest_index(double* array, int length, double value);

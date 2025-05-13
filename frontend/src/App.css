@@ -1,47 +1,69 @@
+/* Layout and Container Styles */
 
+/*
+ * Main container: vertical flex layout, no default margins/padding
+ */
 .main-container {
-    display: flex; /* Activa flexbox */
-    flex-direction: column; /* Apila los elementos verticalmente */
-    margin: 0;
-    padding: 0;
+    display: flex;               /* Enable Flexbox */
+    flex-direction: column;      /* Stack child elements vertically */
+    margin: 0;                   /* Remove default margins */
+    padding: 0;                  /* Remove default padding */
 }
 
-  .top-container {
-    display: flex;
-  }
-  
-    .plot-container {
-      flex: 0 0 80%; /* Ocupa el 75% del ancho */
-    }
-    .plot-container h1 {
-      font-size: 1.5rem; /* Tamaño de encabezado moderno */
-      margin: 0 0 0 20px;
-      color: var(--color-text-primary); /* Color destacado */
-    }
-    
-    .info-container {
-      flex: 0 0 20%; /* Ocupa el 25% del ancho */
-    }
-  
+/*
+ * Top section: horizontal flex layout for plot and info panels
+ */
+.top-container {
+    display: flex;               /* Enable Flexbox for side-by-side layout */
+}
 
+/*
+ * Plot container: occupies 80% of available width
+ */
+.plot-container {
+    flex: 0 0 80%;               /* Do not grow/shrink; fixed 80% basis */
+}
+.plot-container h1 {
+    font-size: 1.5rem;           /* Modern, readable header size */
+    margin: 0 0 0 20px;          /* Left indentation, remove other margins */
+    color: var(--color-text-primary); /* Use primary text color variable */
+}
 
-  .bottom-container {
-      display: flex; /* Activa flexbox */
-      margin-top: -20px;
-  }
+/*
+ * Info container: occupies remaining 20% of width
+ */
+.info-container {
+    flex: 0 0 20%;               /* Do not grow/shrink; fixed 20% basis */
+}
 
-    .heatmap-container {
-      flex: 0 0 30%; /* Ocupa el 50% del ancho */
-    }
-    
-    .user-container {
-      flex: 0 0 70%;
-      display: flex;
-      justify-content: center; /* Centra horizontalmente */
-      align-items: center;     /* Centra verticalmente */
-            
-    }
+/*
+ * Bottom section: horizontal flex layout with slight overlap adjustment
+ */
+.bottom-container {
+    display: flex;               /* Enable Flexbox */
+    margin-top: -20px;           /* Pull section up by 20px for overlap effect */
+}
 
-    .logo {
-      height: 200px;
-    }
+/*
+ * Heatmap container: occupies 30% of available width
+ */
+.heatmap-container {
+    flex: 0 0 30%;               /* Do not grow/shrink; fixed 30% basis */
+}
+
+/*
+ * User container: occupies 70% width and centers its content
+ */
+.user-container {
+    flex: 0 0 70%;               /* Do not grow/shrink; fixed 70% basis */
+    display: flex;               /* Enable Flexbox for centering */
+    justify-content: center;     /* Center horizontally */
+    align-items: center;         /* Center vertically */
+}
+
+/*
+ * Logo image sizing
+ */
+.logo {
+    height: 200px;               /* Fixed height for logo display */
+}

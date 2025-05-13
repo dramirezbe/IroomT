@@ -3,13 +3,11 @@
 
 #include <stdint.h>
 #include <complex.h>
+#include "script_utils.h"
 
-#define MAX_BAND_SIZE 50 ///< Tamaño máximo para el buffer de bandas
+#define MAX_BAND_SIZE 50 ///< Max size buffer
 
-void delete_CS8(uint8_t file_sample);
 
-void delete_JSON(uint8_t file_json);
-
-int load_bands(double* frequencies, double* bandwidths);
+int load_bands(double* frequencies, double* bandwidths, env_path_t *paths);
 
 #endif // IQ_H

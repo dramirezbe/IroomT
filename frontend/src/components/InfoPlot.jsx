@@ -1,5 +1,5 @@
 import React from "react";
-import './InfoPlot.css'; // Importa los estilos específicos del componente
+import './InfoPlot.css';
 
 const InfoPlot = ({ band, fmin, fmax, units, measure }) => {
     return (
