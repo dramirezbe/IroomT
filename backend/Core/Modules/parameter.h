@@ -61,8 +61,8 @@ typedef struct {
     int         nperseg_large;
     int         nperseg_small;
     int         threshold;
-    double* canalization;
-    double* bandwidth;
+    double*     canalization;
+    double*     bandwidth;
     int         canalization_length;
     const char* output_json_path;
     bool        use_mmap;

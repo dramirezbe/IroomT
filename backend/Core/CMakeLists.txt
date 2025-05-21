@@ -26,6 +26,12 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+# Incluir la ruta de los headers de FFTW
+include_directories(/usr/local/fftw/double/include)
+
+# (Opcional) Ruta de las librerías si no están en una ubicación estándar
+link_directories(/usr/local/fftw/double/lib)
+
 # Compilation options
 target_compile_options(main PRIVATE -g -fdiagnostics-color=always)
 
