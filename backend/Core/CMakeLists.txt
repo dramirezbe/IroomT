@@ -14,7 +14,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 file(GLOB SOURCE_FILES
      "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
      "${CMAKE_CURRENT_SOURCE_DIR}/Modules/*.c"
-     #"${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c"
+     "${CMAKE_CURRENT_SOURCE_DIR}/Drivers/*.c"
 )
 
 # Add an executable target
@@ -26,14 +26,8 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-# Incluir la ruta de los headers de FFTW
-include_directories(/usr/local/fftw/double/include)
-
-# (Opcional) Ruta de las librerías si no están en una ubicación estándar
-link_directories(/usr/local/fftw/double/lib)
-
 # Compilation options
 target_compile_options(main PRIVATE -g -fdiagnostics-color=always)
 
 # Link necessary libraries
-target_link_libraries(main fftw3 m pthread) # activar hackrf después
+target_link_libraries(main fftw3 m pthread hackrf) # activar hackrf después

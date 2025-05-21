@@ -51,7 +51,6 @@ function emitJSONData() {
       process.exit(1);
     }
     io.emit('jsonData', data);
-    console.log('[index] Emitted JSON for index');
   });
 }
 

@@ -6,7 +6,6 @@
  * find the index of the element closest to a given value in an array of floating-point numbers.
  */
 #include <stdio.h>
-#include <math.h>
 
 int find_closest_index(double* array, int length, double value) {
     int min_index = 0;

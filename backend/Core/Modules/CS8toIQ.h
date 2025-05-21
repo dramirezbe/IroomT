@@ -19,6 +19,10 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
 
 /**
  * @brief Processing context for block-by-block CS8 to IQ conversion.

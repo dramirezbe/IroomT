@@ -54,7 +54,7 @@ int main(void) {
 
     /* Initialize web interface */
     if (start_web(&paths) != 0) {
-        fprintf(stderr, "Error initializing Web Service\n");
+        fprintf(stderr, "[main] Error initializing Web Service\n");
         exit(EXIT_FAILURE);
     }
 
@@ -89,16 +89,16 @@ int main(void) {
                         "%sTestingSamples/%d", paths.core_samples_path, file_num);
                 config.input_file_path = input_file_path;
                 
-                printf("[Processing] File: %s\n", input_file_path);
+                printf("[main] File: %s\n", input_file_path);
                 int result = process_signal_spectrum(&config);
                 
                 if (result != SP_SUCCESS) {
-                    fprintf(stderr, "[Processing] Error: %d: %s\n", 
+                    fprintf(stderr, "[main] Error: %d: %s\n", 
                             file_num, get_signal_processor_error(result));
                     exit(EXIT_FAILURE);
                 }
                 
-                printf("[Processing] SUCCESS: %d processed\n", file_num);
+                printf("[main] SUCCESS: %d processed\n", file_num);
             }
         }
     } else {
@@ -110,31 +110,30 @@ int main(void) {
         
         while (running) {
             /* Acquire samples from HackRF */
-            printf("[Acquisition] Getting CS8 samples...\n");
+            printf("[main] Getting CS8 samples...\n");
             CS8Samples = getSamples(LOWER_FREQ, UPPER_FREQ);
-            printf("[Acquisition] errno: %d\n", CS8Samples);
+            printf("[main] errno: %d\n", CS8Samples);
             
             /* Process acquired samples */
-            printf("[Processing] File: %s\n", input_file_path);
+            printf("[main] File: %s\n", input_file_path);
             int result = process_signal_spectrum(&config);
             
             if (result != SP_SUCCESS) {
-                fprintf(stderr, "[Processing] ERROR: %s\n", 
+                fprintf(stderr, "[main] ERROR: %s\n", 
                         get_signal_processor_error(result));
                 exit(EXIT_FAILURE);
             }
             
-            printf("[Processing] SUCCESS: %s processed\n", input_file_path);
+            printf("[main] SUCCESS: %s processed\n", input_file_path);
         }
     }
 
     /* Cleanup and shutdown */
-    printf("Stopping web service...\n");
+    printf("[main] Stopping web service...\n");
     if (stop_web() != 0) {
-        fprintf(stderr, "Failed to stop the web process.\n");
+        fprintf(stderr, "[main] Failed to stop the web process.\n");
         exit(EXIT_FAILURE);
     }
-    
-    printf("Done.\n");
+
     return 0;
 }

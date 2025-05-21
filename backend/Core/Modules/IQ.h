@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <complex.h>
 #include "script_utils.h"
+#include <math.h>
 
 #define MAX_BAND_SIZE 50 ///< Max size buffer
 

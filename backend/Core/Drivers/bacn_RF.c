@@ -60,7 +60,7 @@ int rx_callback(hackrf_transfer* transfer)
 		if ((bytes_written != bytes_to_write) ||
 		    (limit_num_samples && (bytes_to_xfer == 0))) {
 			stop_main_loop();
-			fprintf(stderr, "Total Bytes: %u\n",byte_count);
+			fprintf(stderr, "[driver] Total Bytes: %u\n",byte_count);
 			return -1;
 		} else {
 			return 0;
@@ -98,7 +98,7 @@ void sigint_callback_handler(int signum)
 		running = 0;
 		do_exit = true;
 	}
-	fprintf(stderr, "Caught signal %d\n", signum);
+	fprintf(stderr, "[driver] Caught signal %d\n", signum);
 	do_exit = true;
 
 }
@@ -118,12 +118,12 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
     tSample = (hi_freq - lo_freq)/DEFAULT_SAMPLE_RATE_HZ;
 				
     central_freq = lo_freq + DEFAULT_CENTRAL_FREQ_HZ;
-    fprintf(stderr, "central frequency: %lu\n", central_freq);
+    fprintf(stderr, "[driver] central frequency: %lu\n", central_freq);
 
     result = hackrf_init();
 	if (result != HACKRF_SUCCESS) {
 		fprintf(stderr,
-			"hackrf_init() failed: %s (%d)\n",
+			"[driver] hackrf_init() failed: %s (%d)\n",
 			hackrf_error_name(result),
 			result);
 		return -1;
@@ -139,7 +139,7 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 
 	signal(SIGALRM, &sigalrm_callback_handler);
 
-	fprintf(stderr, "Device initialized\r\n");
+	fprintf(stderr, "[driver] Device initialized\r\n");
 
     for(uint8_t i=0; i<tSample; i++)
 	{		
@@ -151,22 +151,22 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 		file = fopen(path, "wb");
 	
 		if (file == NULL) {
-			fprintf(stderr, "Failed to open file: %s\n", path);
+			fprintf(stderr, "[driver] Failed to open file: %s\n", path);
 			return -1;
 		}
 		/* Change file buffer to have bigger one to store or read data on/to HDD */
 		result = setvbuf(file, NULL, _IOFBF, FD_BUFFER_SIZE);
 		if (result != 0) {
-			fprintf(stderr, "setvbuf() failed: %d\n", result);
+			fprintf(stderr, "[driver] setvbuf() failed: %d\n", result);
 			return -1;
 		}
 
-		fprintf(stderr,"Start Acquisition\n");
+		fprintf(stderr,"[driver] Start Acquisition\n");
 
 		result = hackrf_open(&device);
 		if (result != HACKRF_SUCCESS) {
 			fprintf(stderr,
-				"hackrf_open() failed: %s (%d)\n",
+				"[driver] hackrf_open() failed: %s (%d)\n",
 				hackrf_error_name(result),
 				result);
 			return -1;
@@ -175,7 +175,7 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
         result = hackrf_set_sample_rate(device, DEFAULT_SAMPLE_RATE_HZ);
         if (result != HACKRF_SUCCESS) {
             fprintf(stderr,
-                "hackrf_set_sample_rate() failed: %s (%d)\n",
+                "[driver] hackrf_set_sample_rate() failed: %s (%d)\n",
                 hackrf_error_name(result),
                 result);
             return -1;
@@ -184,7 +184,7 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 		result = hackrf_set_hw_sync_mode(device, 0);
 		if (result != HACKRF_SUCCESS) {
 			fprintf(stderr,
-				"hackrf_set_hw_sync_mode() failed: %s (%d)\n",
+				"[driver] hackrf_set_hw_sync_mode() failed: %s (%d)\n",
 				hackrf_error_name(result),
 				result);
 			return -1;
@@ -193,7 +193,7 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
         result = hackrf_set_freq(device, central_freq);
         if (result != HACKRF_SUCCESS) {
             fprintf(stderr,
-                "hackrf_set_freq() failed: %s (%d)\n",
+                "[driver] hackrf_set_freq() failed: %s (%d)\n",
                 hackrf_error_name(result),
                 result);
             return -1;
@@ -205,7 +205,7 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 
 		if (result != HACKRF_SUCCESS) {
 			fprintf(stderr,
-				"hackrf_start_rx() failed: %s (%d)\n",
+				"[driver] hackrf_start_rx() failed: %s (%d)\n",
 				hackrf_error_name(result),
 				result);
 			return -1;
@@ -219,12 +219,12 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 		byte_count = 0;
 
 		if (!((byte_count_now == 0))) {
-			fprintf(stderr, "Name file RDY: %d\n", i);				
+			fprintf(stderr, "[driver] Name file RDY: %d\n", i);				
 		}
 
 		if ((byte_count_now == 0)) {
 			fprintf(stderr,
-				"Couldn't transfer any bytes for one second.\n");
+				"[driver] Couldn't transfer any bytes for one second.\n");
 			break;
 		}	
 
@@ -234,7 +234,7 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 			fprintf(stderr, "Exiting...\n");
 		} else {
 			fprintf(stderr,
-				"Exiting... device_is_streaming() result: %s (%d)\n",
+				"[driver] Exiting... device_is_streaming() result: %s (%d)\n",
 				hackrf_error_name(result),
 				result);
 		}
@@ -242,11 +242,11 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 		result = hackrf_stop_rx(device);
 		if (result != HACKRF_SUCCESS) {
 			fprintf(stderr,
-				"stop_rx() failed: %s (%d)\n",
+				"[driver] stop_rx() failed: %s (%d)\n",
 				hackrf_error_name(result),
 				result);
 		} else {
-			fprintf(stderr, "stop_rx() done\n");
+			fprintf(stderr, "[driver] stop_rx() done\n");
 		}		
 
 		if (file != NULL) {
@@ -256,27 +256,27 @@ int getSamples(int64_t lo_freq, int64_t hi_freq)
 			if ((file != stdout) && (file != stdin)) {
 				fclose(file);
 				file = NULL;
-				fprintf(stderr, "fclose() done\n");
+				fprintf(stderr, "[driver] fclose() done\n");
 			}
 		}
 
 		result = hackrf_close(device);
 		if (result != HACKRF_SUCCESS) {
 			fprintf(stderr,
-				"device_close() failed: %s (%d)\n",
+				"[driver] device_close() failed: %s (%d)\n",
 				hackrf_error_name(result),
 				result);
 		} else {
-			fprintf(stderr, "device_close() done\n");
+			fprintf(stderr, "[driver] device_close() done\n");
 		}			
 	}
 
 	if (device != NULL) 
 	{
 		hackrf_exit();
-		fprintf(stderr, "device_exit() done\n");
+		fprintf(stderr, "[driver] device_exit() done\n");
 	}
 
-	fprintf(stderr, "exit\n");
+	fprintf(stderr, "[driver] exit\n");
 	return 0;
 }

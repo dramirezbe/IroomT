@@ -101,7 +101,7 @@ void welch_psd_complex(complex double* signal, size_t N_signal, double fs,
         f_out[i] = -fs / 2 + i * df;
     }
 
-    printf("PSD computation complete.\n");
+    printf("[welch] PSD computation complete.\n");
 
     /* Clean up FFT resources */
     fftw_destroy_plan(plan);

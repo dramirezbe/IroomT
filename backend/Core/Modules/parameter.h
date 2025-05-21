@@ -16,6 +16,19 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <complex.h>
+#include <time.h>
+#include <unistd.h>
+#include <errno.h>
+#include "../Modules/CS8toIQ.h"
+#include "../Modules/IQ.h"
+#include "../Modules/welch.h"
+#include "../Modules/cJSON.h"
+#include "../Modules/find_closest_index.h"
 
 /**
  * @enum SPErrorCode

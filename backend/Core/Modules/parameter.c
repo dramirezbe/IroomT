@@ -17,21 +17,7 @@
  * - Robust error handling and reporting
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <string.h>
-#include <math.h>
-#include <complex.h>
-#include <time.h>
-#include <unistd.h>
-#include <errno.h>
-#include <stdbool.h>
-#include "../Modules/CS8toIQ.h"
-#include "../Modules/IQ.h"
-#include "../Modules/welch.h"
-#include "../Modules/cJSON.h"
-#include "../Modules/find_closest_index.h"
+
 
 #include "parameter.h"
 
@@ -286,18 +272,18 @@ int process_signal_spectrum(const SignalProcessorConfig* config) {
     clock_t start_time = 0, end_time = 0;
     if (config->verbose_output) {
         start_time = clock();
-        printf("Starting signal processing...\n");
+        printf("[params] Starting signal processing...\n");
     }
     
     // Load IQ data from the input file
     vector_IQ = load_iq_data(config->input_file_path, &num_samples, &error_code);
     if (vector_IQ == NULL) {
-        fprintf(stderr, "Error loading CS8 data: %s\n", cs8_iq_error_string(error_code));
+        fprintf(stderr, "[params] Error loading CS8 data: %s\n", cs8_iq_error_string(error_code));
         return SP_ERROR_FILE_IO;
     }
     
     if (config->verbose_output) {
-        printf("Successfully loaded %zu samples\n", num_samples);
+        printf("[params] Successfully loaded %zu samples\n", num_samples);
     }
     
     // Allocate memory for PSD and frequency arrays
@@ -410,8 +396,8 @@ int process_signal_spectrum(const SignalProcessorConfig* config) {
     if (config->verbose_output) {
         end_time = clock();
         double processing_time = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
-        printf("Processing completed in %.3f seconds\n", processing_time);
-        printf("Signal %s\n", signal_detected ? "DETECTED" : "NOT DETECTED");
+        printf("[params] Processing completed in %.3f seconds\n", processing_time);
+        printf("[params] Signal %s\n", signal_detected ? "DETECTED" : "NOT DETECTED");
     }
     
 cleanup:

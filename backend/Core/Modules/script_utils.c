@@ -1,14 +1,6 @@
 #include "script_utils.h"  // Function declarations and shared types
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <limits.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <errno.h>
-#include <signal.h>
+
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096
@@ -31,7 +23,7 @@ static pid_t npm_pid = -1;
 static void get_executable_path_internal(char *buffer, size_t size) {
     ssize_t len = readlink("/proc/self/exe", buffer, size - 1);
     if (len < 0 || (size_t)len >= size - 1) {
-        perror("get_executable_path_internal: readlink failed");
+        perror("[paths] get_executable_path_internal: readlink failed");
         exit(EXIT_PATH_READ);
     }
     buffer[len] = '\0';
@@ -112,7 +104,7 @@ void get_paths(env_path_t *paths) {
 
     // Resolve the executable directory
     if (resolve_path_internal(exe_dir, exe_dir, sizeof(exe_dir)) < 0) {
-        fprintf(stderr, "get_paths: Cannot resolve '%s': %s\n", exe_dir, strerror(errno));
+        fprintf(stderr, "[paths] get_paths: Cannot resolve '%s': %s\n", exe_dir, strerror(errno));
         exit(EXIT_PATH_READ);
     }
 
@@ -137,11 +129,11 @@ void get_paths(env_path_t *paths) {
         if (fp) break;
     }
     if (!fp) {
-        fprintf(stderr, "get_paths: .env not found in '%s', '%s', or '%s'\n",
+        fprintf(stderr, "[paths] get_paths: .env not found in '%s', '%s', or '%s'\n",
                 exe_dir, up1[0]? up1 : "(n/a)", up2[0]? up2 : "(n/a)");
         exit(EXIT_PATH_READ);
     }
-    printf("get_paths: Found .env at %s\n", env_file);
+    printf("[paths] get_paths: Found .env at %s\n", env_file);
 
     // Parse required keys
     if (parse_env_key_internal(fp, "ROOT_PATH",         paths->root_path,         sizeof(paths->root_path)) ||
@@ -149,7 +141,7 @@ void get_paths(env_path_t *paths) {
         parse_env_key_internal(fp, "CORE_JSON_PATH",    paths->core_json_path,    sizeof(paths->core_json_path)) ||
         parse_env_key_internal(fp, "CORE_BANDS_PATH",   paths->core_bands_path,   sizeof(paths->core_bands_path)))
     {
-        fprintf(stderr, "get_paths: Missing required key in %s\n", env_file);
+        fprintf(stderr, "[paths] get_paths: Missing required key in %s\n", env_file);
         fclose(fp);
         exit(EXIT_PATH_READ);
     }
@@ -166,24 +158,24 @@ void get_paths(env_path_t *paths) {
  */
 int start_web(env_path_t *paths) {
     if (npm_pid > 0) {
-        fprintf(stderr, "start_web: already running (PID %d)\n", npm_pid);
+        fprintf(stderr, "[web] already running (PID %d)\n", npm_pid);
         return -1;
     }
     if (chdir(paths->root_path) != 0) {
-        fprintf(stderr, "start_web: chdir to '%s' failed: %s\n", paths->root_path, strerror(errno));
+        fprintf(stderr, "[web] chdir to '%s' failed: %s\n", paths->root_path, strerror(errno));
         return 1;
     }
     npm_pid = fork();
     if (npm_pid < 0) {
-        perror("start_web: fork failed");
+        perror("[web] fork failed");
         return 1;
     }
     if (npm_pid == 0) {
         execlp("npm", "npm", "start", (char *)NULL);
-        perror("start_web: execlp failed");
+        perror("[web] execlp failed");
         exit(1);
     }
-    printf("start_web: Web started (PID %d)\n", npm_pid);
+    printf("[web] started (PID %d)\n", npm_pid);
     return 0;
 }
 
@@ -196,19 +188,19 @@ int start_web(env_path_t *paths) {
  */
 int stop_web(void) {
     if (npm_pid <= 0) {
-        fprintf(stderr, "stop_web: no running web process (PID=%d)\n", npm_pid);
+        fprintf(stderr, "[web] no running web process (PID=%d)\n", npm_pid);
         return -1;
     }
     if (kill(npm_pid, SIGTERM) == -1) {
-        perror("stop_web: SIGTERM failed");
+        perror("[web] SIGTERM failed");
     } else {
-        printf("stop_web: Sent SIGTERM to PID %d\n", npm_pid);
+        printf("[web] Sent SIGTERM to PID %d\n", npm_pid);
     }
     int status;
     if (waitpid(npm_pid, &status, 0) == npm_pid) {
-        printf("stop_web: Web process %d exited\n", npm_pid);
+        printf("[web] process %d exited\n", npm_pid);
     } else {
-        perror("stop_web: waitpid failed");
+        perror("[web] waitpid failed");
     }
     npm_pid = -1;
     return 0;

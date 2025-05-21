@@ -17,10 +17,7 @@
  * - Cross-platform compatibility (Windows/POSIX)
  */
 #include "CS8toIQ.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <errno.h>
+
 
 #ifdef _WIN32
     /**
