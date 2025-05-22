@@ -55,7 +55,7 @@ const PlotlyLine = ({ xData = [], yData = [] }) => {
     // Plotly layout configuration
     const layout = {
       xaxis: {
-        title: { text: 'Frequency (Hz)', font: { color: colorTextPrimary, size: 14 } },
+        title: { text: 'Frequency (MHz)', font: { color: colorTextPrimary, size: 14 } },
         range: [minX, maxX],
         tickfont: { color: colorTextPrimary },
         gridcolor: `${colorTextPrimary}30`,
